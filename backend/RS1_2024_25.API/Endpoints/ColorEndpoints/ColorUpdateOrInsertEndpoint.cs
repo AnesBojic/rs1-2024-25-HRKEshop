@@ -11,6 +11,7 @@ namespace RS1_2024_25.API.Endpoints.ColorEndpoints;
 
 [Route("colors")]
 //[MyAuthorization(isAdmin: true, isManager: false)]
+// UNCOMMENT THIS LINE TO ENABLE AUTHORIZATION
 public class ColorUpdateOrInsertEndpoint(ApplicationDbContext db) : MyEndpointBaseAsync
    .WithRequest<ColorUpdateOrInsertRequest>
    .WithActionResult<int>
