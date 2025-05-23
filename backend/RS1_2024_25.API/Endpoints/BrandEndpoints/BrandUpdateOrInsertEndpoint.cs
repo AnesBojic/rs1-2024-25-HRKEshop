@@ -9,7 +9,7 @@ using static RS1_2024_25.API.Endpoints.BrandEndpoints.BrandUpdateOrInsertEndpoin
 
 namespace RS1_2024_25.API.Endpoints.BrandEndpoints;
 
-[Route("brands")]
+[Route("brands/UpdateOrInsert")]
 [MyAuthorization(isAdmin: true, isManager: false)]
 public class BrandUpdateOrInsertEndpoint(ApplicationDbContext db) : MyEndpointBaseAsync
     .WithRequest<BrandUpdateOrInsertRequest>
