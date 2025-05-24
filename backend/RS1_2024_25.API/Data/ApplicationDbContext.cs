@@ -13,6 +13,7 @@ namespace RS1_2024_25.API.Data;
 
 public class ApplicationDbContext(DbContextOptions options, IHttpContextAccessor httpContextAccessor) : DbContext(options)
 {
+    public DbSet<Product> Products { get; set; }
     public DbSet<Brand> Brands { get; set; }
     public DbSet<Color> Colors { get; set; }
     public DbSet<AcademicYear> AcademicYears { get; set; }
