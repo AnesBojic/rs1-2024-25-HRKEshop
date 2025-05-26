@@ -8,7 +8,7 @@ using RS1_2024_25.API.Services;
 namespace RS1_2024_25.API.Endpoints.ColorEndpoints
 {
 
-    //[MyAuthorization(isAdmin: true, isManager: false)
+    [MyAuthorization(isAdmin: true, isManager: false)]
     // UNCOMMENT THIS LINE TO ENABLE AUTHORIZATION
     [Route("colors")]
     public class ColorDeleteEndpoint(ApplicationDbContext db) : MyEndpointBaseAsync

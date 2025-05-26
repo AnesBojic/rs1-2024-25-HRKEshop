@@ -10,7 +10,7 @@ using RS1_2024_25.API.Data.Models.SharedTables;
 namespace RS1_2024_25.API.Endpoints.ColorEndpoints;
 
 [Route("colors")]
-//[MyAuthorization(isAdmin: true, isManager: false)]
+[MyAuthorization(isAdmin: true, isManager: false)]
 // UNCOMMENT THIS LINE TO ENABLE AUTHORIZATION
 public class ColorUpdateOrInsertEndpoint(ApplicationDbContext db) : MyEndpointBaseAsync
    .WithRequest<ColorUpdateOrInsertRequest>
@@ -35,7 +35,7 @@ public class ColorUpdateOrInsertEndpoint(ApplicationDbContext db) : MyEndpointBa
         }
         else
         {
-            // Update operation: retrieve the existing brand
+            // Update operation: retrieve the existing Color
             color = await db.Colors
                 //.Include(x => x.User)
                 .SingleOrDefaultAsync(x => x.ID == request.ID, cancellationToken);
@@ -62,7 +62,7 @@ public class ColorUpdateOrInsertEndpoint(ApplicationDbContext db) : MyEndpointBa
     {
         public int? ID { get; set; } // Nullable to allow null for insert operations
         public string Name { get; set; }
-        public string Hex_Code { get; set; } // FK na Tenanta
+        public string Hex_Code { get; set; } 
 
     }
 }

@@ -18,7 +18,7 @@ public class ProductGetAll1Endpoint(ApplicationDbContext db) : MyEndpointBaseAsy
     public override async Task<ProductGetAll1Response[]> HandleAsync(CancellationToken cancellationToken = default)
     {
         var result = await db.Products
-                        .Select(b => new ProductGetAll1Response
+                        .Select(b => new ProductGetAll1Response                     
                         {
                             ID = b.ID,
                             Name = b.Name,
@@ -27,7 +27,7 @@ public class ProductGetAll1Endpoint(ApplicationDbContext db) : MyEndpointBaseAsy
                             ColorId = b.ColorId,
                             BrandId = b.BrandId,
                             TenantId = b.TenantId
-
+                       
 
                         })
                         .ToArrayAsync(cancellationToken);
