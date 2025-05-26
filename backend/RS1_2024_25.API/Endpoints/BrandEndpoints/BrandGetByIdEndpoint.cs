@@ -30,7 +30,7 @@ public class BrandGetByIdEndpoint(ApplicationDbContext db) : MyEndpointBaseAsync
 
         if (color == null)
         {
-            throw new ArgumentException("Color not found");
+            throw new ArgumentException("Brand not found");
         }
 
 

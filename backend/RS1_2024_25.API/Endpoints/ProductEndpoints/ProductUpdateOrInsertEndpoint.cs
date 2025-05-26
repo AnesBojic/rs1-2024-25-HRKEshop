@@ -45,7 +45,7 @@ public class ProductUpdateOrInsertEndpoint(ApplicationDbContext db) : MyEndpoint
 
             if (product == null)
             {
-                return NotFound("Color not found");
+                return NotFound("Product not found");
             }
         }
 
