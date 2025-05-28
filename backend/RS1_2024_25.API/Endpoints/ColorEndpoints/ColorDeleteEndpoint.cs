@@ -10,7 +10,7 @@ namespace RS1_2024_25.API.Endpoints.ColorEndpoints
 
     [MyAuthorization(isAdmin: true, isManager: false)]
     // UNCOMMENT THIS LINE TO ENABLE AUTHORIZATION
-    [Route("colors")]
+    [Route("colors/delete")]
     public class ColorDeleteEndpoint(ApplicationDbContext db) : MyEndpointBaseAsync
         .WithRequest<int>
         .WithoutResult
