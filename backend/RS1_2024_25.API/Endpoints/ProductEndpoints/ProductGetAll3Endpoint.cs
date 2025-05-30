@@ -25,11 +25,41 @@ public class ProductGetAll3Endpoint(ApplicationDbContext db) : MyEndpointBaseAsy
         // Primjena filtera na osnovu naziva grada
         if (!string.IsNullOrWhiteSpace(request.Q))
         {
+
             query = query.Where(p => p.Name.ToLower().Contains(request.Q) 
-                
-               
-            );
+          
+           );
+
         }
+
+        // Filter by Gender if provided
+        if (request.Gender.HasValue)
+        {
+            query = query.Where(p => p.Gender == request.Gender.Value);
+        }
+
+        // Filter by minimum price
+        if (request.MinPrice.HasValue)
+        {
+            query = query.Where(p => p.Price >= request.MinPrice.Value);
+        }
+
+        // Filter by maximum price
+        if (request.MaxPrice.HasValue)
+        {
+            query = query.Where(p => p.Price <= request.MaxPrice.Value);
+        }
+
+        if (request.ColorId.HasValue)
+        {
+            query = query.Where(c => c.ColorId == request.ColorId.Value);
+        }
+
+        if (request.BrandId.HasValue)
+        {
+            query = query.Where(c => c.BrandId == request.BrandId.Value);
+        }
+
 
 
         // Projektovanje u rezultatni tip
@@ -52,6 +82,13 @@ public class ProductGetAll3Endpoint(ApplicationDbContext db) : MyEndpointBaseAsy
     public class ProductGetAll3Request : MyPagedRequest //naslijeđujemo
     {
         public string? Q { get; set; } = string.Empty;
+
+        public Gender? Gender { get; set; }
+        public float? MinPrice { get; set; }
+        public float? MaxPrice { get; set; }
+        public int? ColorId { get; set; }
+        public int? BrandId { get; set; }
+
     }
 
     public class ProductGetAll3Response
