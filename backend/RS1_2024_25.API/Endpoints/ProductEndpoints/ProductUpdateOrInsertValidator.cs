@@ -8,16 +8,21 @@ public class ProductUpdateOrInsertValidator : AbstractValidator<ProductUpdateOrI
     public ProductUpdateOrInsertValidator(ApplicationDbContext dbContext)
     {
 
-        // Validacija StudentNumber
+        
         RuleFor(x => x.Price)
             .GreaterThanOrEqualTo(1);
 
-
-        // Validacija Gender
+        
         RuleFor(x => x.Gender)
-            .IsInEnum().WithMessage("Pol mora biti validan (Male, Female, Other).");
+            .IsInEnum().WithMessage("Gender has to be valid (Male, Female, Other).");
+
+        RuleFor(x => x.Name)
+            .MinimumLength(3).WithMessage("Name of the product has to have at least 3 characters.");
+
+        RuleFor(x=> x.TenantId)
+            .NotNull().WithMessage("TenantId is required");
 
 
-   
+
     }
 }

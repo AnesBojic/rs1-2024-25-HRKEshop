@@ -8,7 +8,7 @@ public class BrandUpdateOrInsertValidator : AbstractValidator<BrandUpdateOrInser
     public BrandUpdateOrInsertValidator(ApplicationDbContext dbContext)
     {
 
-        // Validation for hex code
+        // Validation for tenant ID
         RuleFor(x => x.TenantId)
             .NotNull().WithMessage("TenantId is required");
 
