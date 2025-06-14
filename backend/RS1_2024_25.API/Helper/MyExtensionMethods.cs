@@ -41,4 +41,6 @@ public static class MyExtensionMethods
             return name + "es"; // Class → Classes
         return name + "s"; // Default: add 's' at the end
     }
+
+
 }

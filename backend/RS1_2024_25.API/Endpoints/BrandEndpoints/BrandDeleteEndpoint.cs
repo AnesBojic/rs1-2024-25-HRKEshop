@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RS1_2024_25.API.Data;
 using RS1_2024_25.API.Helper.Api;
 
 namespace RS1_2024_25.API.Endpoints.BrandEndpoints
-{//[MyAuthorization(isAdmin: true, isManager: false)
-    // UNCOMMENT THIS LINE TO ENABLE AUTHORIZATION
+{
+    [Authorize(Roles = "Admin")]
     [Route("brands/delete")]
     public class BrandDeleteEndpoint(ApplicationDbContext db) : MyEndpointBaseAsync
         .WithRequest<int>
@@ -22,7 +23,7 @@ namespace RS1_2024_25.API.Endpoints.BrandEndpoints
 
 
 
-            db.Brands.Remove(brand);
+            db.BrandsAll.Remove(brand);
             await db.SaveChangesAsync(cancellationToken);
         }
     }

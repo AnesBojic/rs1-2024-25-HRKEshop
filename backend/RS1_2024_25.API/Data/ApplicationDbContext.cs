@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Update.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using RS1_2024_25.API.Data.Models.SharedTables;
 using RS1_2024_25.API.Data.Models.TenantSpecificTables.Modul1_Auth;
@@ -8,14 +9,14 @@ using RS1_2024_25.API.Helper.BaseClasses;
 using RS1_2024_25.API.Services;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq.Expressions;
+using System.Security.Cryptography.Xml;
 
 namespace RS1_2024_25.API.Data;
 
 public class ApplicationDbContext(DbContextOptions options, IHttpContextAccessor httpContextAccessor) : DbContext(options)
 {
-    public DbSet<Product> Products { get; set; }
-    public DbSet<Brand> Brands { get; set; }
-    public DbSet<Color> Colors { get; set; }
+  
+   public DbSet<Color> Colors { get; set; }
     public DbSet<AcademicYear> AcademicYears { get; set; }
     public DbSet<City> Cities { get; set; }
     public DbSet<Country> Countries { get; set; }
@@ -23,6 +24,9 @@ public class ApplicationDbContext(DbContextOptions options, IHttpContextAccessor
     public DbSet<Region> Regions { get; set; }
     public DbSet<Tenant> Tenants { get; set; }
 
+    public DbSet<Role> Roles { get; set; }
+
+    public DbSet<AppUser> AppUsersAll { get; set; }
     public DbSet<MyAppUser> MyAppUsersAll { get; set; }
     public DbSet<MyAuthenticationToken> MyAuthenticationTokensAll { get; set; }
     public DbSet<Department> DepartmentsAll { get; set; }
@@ -30,7 +34,18 @@ public class ApplicationDbContext(DbContextOptions options, IHttpContextAccessor
     public DbSet<Professor> ProfessorsAll { get; set; }
     public DbSet<Student> StudentsAll { get; set; }
 
+    public DbSet<Product> ProductsAll { get; set; }
+    public DbSet<Brand> BrandsAll { get; set; }
+
+    public DbSet<Image> ImagesAll { get; set; }
+
+
     // IQueryable umjesto DbSet
+
+    public IQueryable<Image> Images => Set<Image>().Where(e => e.TenantId == CurrentTenantIdThrowIfFail);
+    public IQueryable<Product> Products => Set<Product>().Where(e => e.TenantId == CurrentTenantIdThrowIfFail);
+    public IQueryable<Brand> Brands => Set<Brand>().Where(e => e.TenantId == CurrentTenantIdThrowIfFail);
+    public IQueryable<AppUser> AppUsers => Set<AppUser>().Where(e=> e.TenantId == CurrentTenantIdThrowIfFail);
     public IQueryable<MyAppUser> MyAppUsers => Set<MyAppUser>().Where(e => e.TenantId == CurrentTenantIdThrowIfFail);
     public IQueryable<MyAuthenticationToken> MyAuthenticationTokens => Set<MyAuthenticationToken>();
     public IQueryable<Department> Departments => Set<Department>().Where(e => e.TenantId == CurrentTenantIdThrowIfFail);
@@ -60,8 +75,27 @@ public class ApplicationDbContext(DbContextOptions options, IHttpContextAccessor
         {
             if (_CurrentTenantId == null)
             {
-                MyAuthInfo myAuthInfo = MyAuthServiceHelper.GetAuthInfoFromRequest(this, httpContextAccessor);
-                _CurrentTenantId = myAuthInfo.TenantId;
+                //Changing use for claim
+                /*MyAuthInfo myAuthInfo = MyAuthServiceHelper.GetAuthInfoFromRequest(this, httpContextAccessor);
+                _CurrentTenantId = myAuthInfo.TenantId;*/
+
+                var user = httpContextAccessor.HttpContext?.User;
+                if(user == null || !user.Identity?.IsAuthenticated == true)
+                {
+                    return null;
+                }
+
+                var tenantClaim = user.Claims.FirstOrDefault(c=> c.Type == "tenant_id");
+                if(tenantClaim == null)
+                {
+                    return null;
+                }
+                if(int.TryParse(tenantClaim.Value, out int tenantId))
+                {
+                    _CurrentTenantId = tenantId;
+                }
+
+
             }
             return _CurrentTenantId;
         }
@@ -110,15 +144,39 @@ public class ApplicationDbContext(DbContextOptions options, IHttpContextAccessor
             }
         }
     }
+    //Fix for updatedAt not working properly
+    //fix
+    private void UpdateAuditFields()
+    {
+        var now = DateTime.UtcNow;
+
+        foreach (var entry in ChangeTracker.Entries<BaseEntity>())
+        {
+            if (entry.State == EntityState.Added)
+            {
+                entry.Entity.CreatedAt = now;
+                entry.Entity.UpdatedAt = now;
+
+            }
+            else if (entry.State == EntityState.Modified || (entry.State == EntityState.Unchanged && entry.Properties.Any(p => p.IsModified)))
+            {
+                
+                entry.Entity.UpdatedAt = now;
+            }
+
+        }
+    }
  
     public override int SaveChanges()
     {
+        UpdateAuditFields();
         AddTenantIdToNewEntities();
         return base.SaveChanges();
     }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
+        UpdateAuditFields();
         AddTenantIdToNewEntities();
         return base.SaveChangesAsync(cancellationToken);
     }
@@ -131,7 +189,12 @@ public class ApplicationDbContext(DbContextOptions options, IHttpContextAccessor
         {
             // Postavljanje TenantId za nove entitete
             var entity = (TenantSpecificTable)entry.Entity;
-            entity.TenantId = CurrentTenantIdThrowIfFail;
+
+            //Postavljanje tenantId samo u slucaju ako nije hardkodiran, kako bi seedani testovi bili bolji ,
+            if (entity.TenantId == 0)
+            {
+                entity.TenantId = CurrentTenantIdThrowIfFail;
+            }
         }
     }
     #endregion

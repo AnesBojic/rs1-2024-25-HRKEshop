@@ -3,9 +3,12 @@ using RS1_2024_25.API.Data;
 using RS1_2024_25.API.Helper.Api;
 using RS1_2024_25.API.Helper;
 using static RS1_2024_25.API.Endpoints.BrandEndpoints.BrandGetAll3Endpoint;
+using Microsoft.AspNetCore.Authorization;
 
 namespace RS1_2024_25.API.Endpoints.BrandEndpoints;
 //sa paging i sa filterom
+
+[Authorize]
 [Route("brand")]
 public class BrandGetAll3Endpoint(ApplicationDbContext db) : MyEndpointBaseAsync
     .WithRequest<BrandGetAll3Request>
@@ -18,7 +21,7 @@ public class BrandGetAll3Endpoint(ApplicationDbContext db) : MyEndpointBaseAsync
         var query = db.Brands
             .AsQueryable();
 
-       
+
         if (!string.IsNullOrWhiteSpace(request.Name))
         {
 
@@ -28,7 +31,7 @@ public class BrandGetAll3Endpoint(ApplicationDbContext db) : MyEndpointBaseAsync
 
         }
 
-    
+
 
 
         // Projektovanje u rezultatni tip
@@ -36,7 +39,7 @@ public class BrandGetAll3Endpoint(ApplicationDbContext db) : MyEndpointBaseAsync
         {
             ID = c.ID,
             Name = c.Name,
-            
+
         });
 
         // Kreiranje paginiranog odgovora sa filterom
@@ -49,7 +52,7 @@ public class BrandGetAll3Endpoint(ApplicationDbContext db) : MyEndpointBaseAsync
     {
         public string? Name { get; set; } = string.Empty;
 
-       
+
 
     }
 
@@ -57,7 +60,7 @@ public class BrandGetAll3Endpoint(ApplicationDbContext db) : MyEndpointBaseAsync
     {
         public required int ID { get; set; }
         public string? Name { get; set; }
-        
+
 
 
     }

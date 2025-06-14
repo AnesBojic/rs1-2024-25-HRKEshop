@@ -229,6 +229,29 @@ namespace RS1_2024_25.API.Migrations
                     b.ToTable("Regions", (string)null);
                 });
 
+            modelBuilder.Entity("RS1_2024_25.API.Data.Models.SharedTables.Role", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Roles", (string)null);
+                });
+
             modelBuilder.Entity("RS1_2024_25.API.Data.Models.SharedTables.Tenant", b =>
                 {
                     b.Property<int>("ID")
@@ -258,6 +281,76 @@ namespace RS1_2024_25.API.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Tenants", (string)null);
+                });
+
+            modelBuilder.Entity("RS1_2024_25.API.Data.Models.TenantSpecificTables.Modul1_Auth.AppUser", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("City")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EmailVerifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("FailedLoginAttempts")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("LockoutUntil")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Phone")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RememberToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("RoleID")
+                        .HasColumnType("int")
+                        .HasColumnName("roles_id");
+
+                    b.Property<string>("Surname")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TenantId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ZipCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("RoleID");
+
+                    b.HasIndex("TenantId");
+
+                    b.ToTable("AppUsers", (string)null);
                 });
 
             modelBuilder.Entity("RS1_2024_25.API.Data.Models.TenantSpecificTables.Modul1_Auth.MyAppUser", b =>
@@ -401,6 +494,47 @@ namespace RS1_2024_25.API.Migrations
                     b.HasIndex("TenantId");
 
                     b.ToTable("Faculties", (string)null);
+                });
+
+            modelBuilder.Entity("RS1_2024_25.API.Data.Models.TenantSpecificTables.Modul2_Basic.Image", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FilePath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ImageableId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ImageableType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TenantId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("TenantId");
+
+                    b.ToTable("Images", (string)null);
                 });
 
             modelBuilder.Entity("RS1_2024_25.API.Data.Models.TenantSpecificTables.Modul2_Basic.Product", b =>
@@ -619,6 +753,25 @@ namespace RS1_2024_25.API.Migrations
                     b.Navigation("Country");
                 });
 
+            modelBuilder.Entity("RS1_2024_25.API.Data.Models.TenantSpecificTables.Modul1_Auth.AppUser", b =>
+                {
+                    b.HasOne("RS1_2024_25.API.Data.Models.SharedTables.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleID")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("RS1_2024_25.API.Data.Models.SharedTables.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+
+                    b.Navigation("Tenant");
+                });
+
             modelBuilder.Entity("RS1_2024_25.API.Data.Models.TenantSpecificTables.Modul1_Auth.MyAppUser", b =>
                 {
                     b.HasOne("RS1_2024_25.API.Data.Models.SharedTables.Tenant", "Tenant")
@@ -661,6 +814,17 @@ namespace RS1_2024_25.API.Migrations
                 });
 
             modelBuilder.Entity("RS1_2024_25.API.Data.Models.TenantSpecificTables.Modul2_Basic.Faculty", b =>
+                {
+                    b.HasOne("RS1_2024_25.API.Data.Models.SharedTables.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("RS1_2024_25.API.Data.Models.TenantSpecificTables.Modul2_Basic.Image", b =>
                 {
                     b.HasOne("RS1_2024_25.API.Data.Models.SharedTables.Tenant", "Tenant")
                         .WithMany()

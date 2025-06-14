@@ -16,10 +16,10 @@ namespace RS1_2024_25.API.Data.Models.TenantSpecificTables.Modul2_Basic
         public int BrandId { get; set; }
         [ForeignKey(nameof(BrandId))]
         public Brand? Brand { get; set; }
-        
 
-    
+
+
     }
-    
-    
+
+
 }

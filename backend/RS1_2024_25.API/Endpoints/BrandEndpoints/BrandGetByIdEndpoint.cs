@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RS1_2024_25.API.Data;
 using RS1_2024_25.API.Helper.Api;
@@ -7,7 +8,7 @@ using static RS1_2024_25.API.Endpoints.BrandEndpoints.BrandGetByIdEndpoint;
 namespace RS1_2024_25.API.Endpoints.BrandEndpoints;
 
 
-
+[Authorize]
 [Route("brand")]
 public class BrandGetByIdEndpoint(ApplicationDbContext db) : MyEndpointBaseAsync
     .WithRequest<int>

@@ -7,5 +7,4 @@ namespace RS1_2024_25.API.Data.Models.SharedTables
         public string Name { get; set; }  // Naziv boje
         public string Hex_Code { get; set; }
     }
-   
 }

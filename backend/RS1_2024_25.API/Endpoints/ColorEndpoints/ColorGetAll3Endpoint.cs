@@ -3,9 +3,10 @@ using RS1_2024_25.API.Data;
 using RS1_2024_25.API.Helper.Api;
 using RS1_2024_25.API.Helper;
 using static RS1_2024_25.API.Endpoints.ColorEndpoints.ColorGetAll3Endpoint;
+using Microsoft.AspNetCore.Authorization;
 
 namespace RS1_2024_25.API.Endpoints.ColorEndpoints;
-//sa paging i sa filterom
+[Authorize]
 [Route("color")]
 public class ColorGetAll3Endpoint(ApplicationDbContext db) : MyEndpointBaseAsync
     .WithRequest<ColorGetAll3Request>

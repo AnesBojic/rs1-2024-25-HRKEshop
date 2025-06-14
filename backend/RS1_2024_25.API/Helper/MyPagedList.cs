@@ -25,7 +25,9 @@ public class MyPagedList<T>
     public static async Task<MyPagedList<T>> CreateAsync(IQueryable<T> source, MyPagedRequest pagingRequest, CancellationToken cancellationToken)
     {
         var totalCount = await source.CountAsync();
-        var items = await source.Skip((pagingRequest.PageNumber - 1) * pagingRequest.PageSize).Take(pagingRequest.PageSize).ToArrayAsync(cancellationToken);
+        var items = await source.Skip((pagingRequest.PageNumber - 1) * pagingRequest.PageSize)
+            .Take(pagingRequest.PageSize)
+            .ToArrayAsync(cancellationToken);
         
         return new MyPagedList<T>(items, totalCount, pagingRequest.PageNumber, pagingRequest.PageSize);
     }

@@ -6,11 +6,13 @@ using RS1_2024_25.API.Services;
 using Microsoft.EntityFrameworkCore;
 using RS1_2024_25.API.Data.Models.TenantSpecificTables.Modul2_Basic;
 using static RS1_2024_25.API.Endpoints.BrandEndpoints.BrandUpdateOrInsertEndpoint;
+using Microsoft.AspNetCore.Authorization;
 
 namespace RS1_2024_25.API.Endpoints.BrandEndpoints;
 
+[Authorize(Roles = "Admin")]
 [Route("brands/UpdateOrInsert")]
-[MyAuthorization(isAdmin: true, isManager: false)]
+
 public class BrandUpdateOrInsertEndpoint(ApplicationDbContext db) : MyEndpointBaseAsync
     .WithRequest<BrandUpdateOrInsertRequest>
     .WithActionResult<int>
@@ -28,8 +30,8 @@ public class BrandUpdateOrInsertEndpoint(ApplicationDbContext db) : MyEndpointBa
         if (isInsert)
         {
             brand = new Brand();
-            
-            
+
+
             db.Add(brand);
         }
         else
@@ -47,7 +49,7 @@ public class BrandUpdateOrInsertEndpoint(ApplicationDbContext db) : MyEndpointBa
 
         // Set common properties for both insert and update
         brand.Name = request.Name;
-        brand.TenantId = request.TenantId;
+        
 
 
         // Save changes to the database
@@ -60,7 +62,7 @@ public class BrandUpdateOrInsertEndpoint(ApplicationDbContext db) : MyEndpointBa
     {
         public int? ID { get; set; } // Nullable to allow null for insert operations
         public string Name { get; set; }
-        public int TenantId { get; set; } // FK na Tenanta
+       
 
     }
 }

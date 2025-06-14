@@ -8,11 +8,7 @@ public class BrandUpdateOrInsertValidator : AbstractValidator<BrandUpdateOrInser
     public BrandUpdateOrInsertValidator(ApplicationDbContext dbContext)
     {
 
-        // Validation for tenant ID
-        RuleFor(x => x.TenantId)
-            .NotNull().WithMessage("TenantId is required");
-
-
+       
 
         // Validation for name
         RuleFor(x => x.Name)

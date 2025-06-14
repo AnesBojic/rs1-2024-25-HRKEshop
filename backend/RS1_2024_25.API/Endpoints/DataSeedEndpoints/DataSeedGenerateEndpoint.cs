@@ -405,6 +405,29 @@ public class DataSeedGenerateEndpoint(ApplicationDbContext db)
             x.BirthMunicipality = defaultOpstina;
         }
 
+        //Creating roles
+        var roles = new List<Role>
+        {
+            new Role
+            {
+                Name = "Admin"
+            },
+            new Role
+            {
+                Name = "Customer",
+            },
+            new Role
+            {
+                Name = "Manager"
+            }
+
+
+        };
+
+
+        //Adding data to database
+        await db.AddRangeAsync(roles, cancellationToken);
+
         // Dodavanje podataka u bazu    
         await db.AddRangeAsync(faculties, cancellationToken);
         await db.AddRangeAsync(academicYears, cancellationToken);
