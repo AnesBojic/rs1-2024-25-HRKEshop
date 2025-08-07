@@ -1,0 +1,22 @@
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+mat-card
+{
+  min-width: 300px;
+  min-height: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 15px;
+}
+.email-confirm-message
+{
+  font-size: larger;
+  text-align: center;
+  font-weight: 600;
+  margin: 0;
+}

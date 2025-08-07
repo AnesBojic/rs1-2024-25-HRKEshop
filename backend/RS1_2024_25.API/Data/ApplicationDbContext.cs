@@ -9,23 +9,29 @@ using RS1_2024_25.API.Helper.BaseClasses;
 using RS1_2024_25.API.Services;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq.Expressions;
+using System.Security.Claims;
 using System.Security.Cryptography.Xml;
 
 namespace RS1_2024_25.API.Data;
 
 public class ApplicationDbContext(DbContextOptions options, IHttpContextAccessor httpContextAccessor) : DbContext(options)
 {
-  
-   public DbSet<Color> Colors { get; set; }
+    
+   
+    public DbSet<Color> Colors { get; set; }
     public DbSet<AcademicYear> AcademicYears { get; set; }
     public DbSet<City> Cities { get; set; }
     public DbSet<Country> Countries { get; set; }
     public DbSet<Municipality> Municipalities { get; set; }
     public DbSet<Region> Regions { get; set; }
     public DbSet<Tenant> Tenants { get; set; }
-
     public DbSet<Role> Roles { get; set; }
 
+
+
+    public DbSet<categories_products> Categories_ProductsAll { get; set; }
+    public DbSet<Category> CategoryAll { get; set; }
+    public DbSet<SizeType> SizeTypesAll { get; set; }
     public DbSet<AppUser> AppUsersAll { get; set; }
     public DbSet<MyAppUser> MyAppUsersAll { get; set; }
     public DbSet<MyAuthenticationToken> MyAuthenticationTokensAll { get; set; }
@@ -39,9 +45,31 @@ public class ApplicationDbContext(DbContextOptions options, IHttpContextAccessor
 
     public DbSet<Image> ImagesAll { get; set; }
 
+    public DbSet<Order> OrdersAll { get; set; }
 
+    public DbSet<OrderItem> OrderItemsAll { get; set; }
+
+    public DbSet<ProductSize> ProductsSizesAll { get; set; }
+
+    public DbSet<Size> SizesAll { get; set; }
+
+    public DbSet<Favorite> FavoritesAll { get; set; }
+
+    public DbSet<ProductRating> ProductRatingsAll { get; set; }
+
+    public DbSet<EmailVerificationToken> EmailVerificationTokensAll { get; set; }
     // IQueryable umjesto DbSet
 
+    public IQueryable<categories_products> CategoriesProducts => Set<categories_products>().Where(e => e.TenantId == CurrentTenantIdThrowIfFail);
+    public IQueryable<Category> Categories => Set<Category>().Where(e => e.TenantId == CurrentTenantIdThrowIfFail);
+    public IQueryable<EmailVerificationToken> EmailVerificationTokens => Set<EmailVerificationToken>().Where(e => e.TenantId == CurrentTenantIdThrowIfFail);
+    public IQueryable<ProductRating> ProductRatings => Set<ProductRating>().Where(e => e.TenantId == CurrentTenantIdThrowIfFail);
+    public IQueryable<Favorite> Favorites => Set<Favorite>().Where(e => e.TenantId == CurrentTenantIdThrowIfFail);
+    public IQueryable<SizeType> SizeTypes => Set<SizeType>().Where(e => e.TenantId == CurrentTenantIdThrowIfFail);
+    public IQueryable<Size> Sizes => Set<Size>().Where(e => e.TenantId == CurrentTenantIdThrowIfFail);
+    public IQueryable<ProductSize> ProductSizes => Set<ProductSize>().Where(e => e.TenantId == CurrentTenantIdThrowIfFail);
+    public IQueryable<OrderItem> OrderItems => Set<OrderItem>().Where(e => e.TenantId == CurrentTenantIdThrowIfFail);
+    public IQueryable<Order> Orders => Set<Order>().Where(e => e.TenantId == CurrentTenantIdThrowIfFail);
     public IQueryable<Image> Images => Set<Image>().Where(e => e.TenantId == CurrentTenantIdThrowIfFail);
     public IQueryable<Product> Products => Set<Product>().Where(e => e.TenantId == CurrentTenantIdThrowIfFail);
     public IQueryable<Brand> Brands => Set<Brand>().Where(e => e.TenantId == CurrentTenantIdThrowIfFail);
@@ -63,6 +91,13 @@ public class ApplicationDbContext(DbContextOptions options, IHttpContextAccessor
             var result = CurrentTenantId;
             if (result == null || result == 0)
             {
+                //for appuser so it has defaul tenant when there are no claims
+                var path = httpContextAccessor.HttpContext?.Request.Path.Value ?? "";
+                if(path.StartsWith("/appusers/add",StringComparison.OrdinalIgnoreCase))
+                {
+                    return 1;
+                }
+
                 throw new UnauthorizedAccessException();
             }
 
@@ -197,5 +232,12 @@ public class ApplicationDbContext(DbContextOptions options, IHttpContextAccessor
             }
         }
     }
+
+    public int GetUserIdThrow()
+    {
+        return int.Parse(httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+    }
+
     #endregion
 }

@@ -5,30 +5,40 @@ import {MyConfig} from '../../my-config';
 import {MyAuthService} from '../../services/auth-services/my-auth.service';
 import {LoginTokenDto} from '../../services/auth-services/dto/login-token-dto';
 import {MyBaseEndpointAsync} from '../../helper/my-base-endpoint-async.interface';
+import {AuthService} from '../../services/auth-services/auth.service';
 
 export interface LoginRequest {
   email: string;
   password: string;
 }
+export  interface  LoginResponse
+{
+  token :string;
+  refreshToken : string;
+  email:string;
+}
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthLoginEndpointService implements MyBaseEndpointAsync<LoginRequest, LoginTokenDto> {
-  private apiUrl = `${MyConfig.api_address}/auth/login`;
+export class AuthLoginEndpointService implements MyBaseEndpointAsync<LoginRequest, LoginResponse> {
+  private apiUrl = `${MyConfig.api_address}/auth1/login`;
 
-  constructor(private httpClient: HttpClient, private myAuthService: MyAuthService) {
+  constructor(private httpClient: HttpClient, private authService: AuthService) {
   }
 
-  handleAsync(request: LoginRequest) {
-    return this.httpClient.post<LoginTokenDto>(`${this.apiUrl}`, request).pipe(
-      tap((response) => {
-        // Use MyAuthService to store login token and auth info
-        this.myAuthService.setLoggedInUser({
-          token: response.token,
-          myAuthInfo: response.myAuthInfo
-        });
+  handleAsync(request:LoginRequest)
+  {
+    return this.httpClient.post<LoginResponse>(this.apiUrl,request).pipe(
+      tap((response)=>
+      {
+        this.authService.setTokens(response.token,response.refreshToken);
       })
-    );
+
+    )
+
+
   }
+
+
 }

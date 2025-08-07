@@ -4,7 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using static System.Net.WebRequestMethods;
+
 
 namespace RS1_2024_25.API.Services
 {
@@ -57,7 +57,14 @@ namespace RS1_2024_25.API.Services
 
 
             return Convert.ToBase64String(randomNumber);
-
+        }
+        public string GeneratePasswordResetToken()
+        {
+            return GenerateRefreshToken();
+        }
+        public string GenerateEmailConfirmationToken()
+        {
+            return GenerateRefreshToken();
         }
 
         

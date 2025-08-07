@@ -1,0 +1,36 @@
+<h2>Lista proizvoda</h2>
+
+<!-- Filter -->
+<div>
+  <input [(ngModel)]="filter.q" placeholder="Pretraži proizvode..." (keyup.enter)="loadData()" />
+  <button (click)="loadData()">Traži</button>
+</div>
+
+<!-- Tabela sa podacima -->
+<table *ngIf="pagedData" class="table table-bordered mt-3">
+  <thead>
+  <tr>
+    <th>Naziv</th>
+    <th>Cijena</th>
+    <th>Spol</th>
+    <th>Brend ID</th>
+    <th>Boja ID</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let p of pagedData.dataItems">
+    <td>{{ p.name }}</td>
+    <td>{{ p.price }} KM</td>
+    <td>{{ p.gender }}</td>
+    <td>{{ p.brandId }}</td>
+    <td>{{ p.colorId }}</td>
+  </tr>
+  </tbody>
+</table>
+
+<!-- Paginacija -->
+<div *ngIf="pagedData" class="pagination">
+  <button (click)="prev()" [disabled]="!pagedData.hasPrevious">❮ Prethodna</button>
+  <span>Stranica {{ pagedData.currentPage }} od {{ pagedData.totalPages }}</span>
+  <button (click)="next()" [disabled]="!pagedData.hasNext">Sljedeća ❯</button>
+</div>

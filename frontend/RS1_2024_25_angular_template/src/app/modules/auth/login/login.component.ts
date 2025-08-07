@@ -1,8 +1,10 @@
-import {Component} from '@angular/core';
-import {Router} from '@angular/router';
-import {AuthLoginEndpointService} from '../../../endpoints/auth-endpoints/auth-login-endpoint.service';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {MyInputTextType} from '../../shared/my-reactive-forms/my-input-text/my-input-text.component';
+import {AuthApi} from '../../../api/auth.api';
+import {LoginRequestDto} from '../../../dto/auth.dto';
+import {AuthService} from '../../../services/auth-services/auth.service';
+import {Router} from '@angular/router';
+
 
 @Component({
   selector: 'app-login',
@@ -10,26 +12,69 @@ import {MyInputTextType} from '../../shared/my-reactive-forms/my-input-text/my-i
   styleUrls: ['./login.component.css'],
   standalone: false,
 })
-export class LoginComponent {
-  form: FormGroup;
-  protected readonly MyInputTextType = MyInputTextType;
+export class LoginComponent implements  OnInit{
 
-  constructor(private fb: FormBuilder, private authLoginService: AuthLoginEndpointService, private router: Router) {
+  form!:FormGroup;
+  hidePassword=true;
+  errorHandler:string | null = null;
+
+  constructor(private fb: FormBuilder,private authApi:AuthApi,private authService:AuthService,private router:Router) {
+  }
+
+  ngOnInit() :void {
 
     this.form = this.fb.group({
-      email: ['admin', [Validators.required, Validators.min(2), Validators.max(15)]],
-      password: ['test', [Validators.required, Validators.min(2), Validators.max(30)]],
+      email:['',[Validators.required,Validators.email]],
+      password:['',Validators.required]
     });
+    this.form.valueChanges.subscribe(()=>{
+      this.errorHandler = null;
+    })
   }
 
-  onLogin(): void {
-    if (this.form.invalid) return;
+  onSubmit() : void
+  {
 
-    this.authLoginService.handleAsync(this.form.value).subscribe({
-      next: () => {
-        console.log('Login successful');
-        this.router.navigate(['/admin']); // Redirect to admin panel
+    if(this.form.invalid) return;
+
+    const {email,password} =this.form.value;
+
+    const loginRequest:LoginRequestDto = {email,password};
+
+
+
+
+
+
+    this.authApi.login(loginRequest).subscribe({
+      next:response=>{
+
+        console.log('Login succesfull',response);
+        this.authService.setTokens(response.token,response.refreshToken);
+        this.router.navigate(['/public']);
+
       },
-    });
+      error:err => {
+
+        console.error("Login failed",err);
+
+        if(err.error && err.error.errorCode && err.error.message)
+        {
+          this.errorHandler = err.error.message;
+        }
+        else
+        {
+          this.errorHandler = "An unexecpted error occurred. Please try again later.";
+        }
+
+        setTimeout(()=>{
+          this.errorHandler = null;
+        },5000)
+
+      }
+    })
   }
+
+
+
 }

@@ -41,6 +41,10 @@ namespace RS1_2024_25.API.Data.Models.TenantSpecificTables.Modul1_Auth
 
         public DateTime? LockoutUntil { get; set; }
 
+        //Extending appuser for paswort reset
+        public string? PasswordResetToken { get; set; }
+        public DateTime? PasswordResetTokenCreatedAt { get; set; }
+
         public void SetPassword(string password)
         {
             var hasher = new PasswordHasher<AppUser>();
@@ -61,6 +65,10 @@ namespace RS1_2024_25.API.Data.Models.TenantSpecificTables.Modul1_Auth
             else
             {
                 FailedLoginAttempts++;
+                if(FailedLoginAttempts >3)
+                {
+                    this.LockAccount(1);
+                }
                 return false;
             }
         }

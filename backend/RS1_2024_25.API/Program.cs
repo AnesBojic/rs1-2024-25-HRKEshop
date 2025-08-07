@@ -15,6 +15,7 @@ using RS1_2024_25.API.Services.Interfaces;
 using RS1_2024_25.API.Endpoints.AppUserEndpoints;
 
 
+
 //doing it with builder
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,6 +34,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 
 
+
+
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -42,11 +46,13 @@ builder.Services.AddHttpContextAccessor();
 //dodajte vaše servise
 builder.Services.AddTransient<IMyAuthService, MyAuthService>();
 builder.Services.AddSignalR();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 //builder.Services.AddFluentValidationAutoValidation();
-
+builder.Services.AddScoped<IAuthContext, AuthContext>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<IFileService,FileService>();
+
 
 //Configuring JWT Authentication 
 
@@ -89,6 +95,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 //pretrazuje sve validatore iz DLL fajla (tj. projekta) koji sadrži AuthGetEndpoint.css
 //builder.Services.AddValidatorsFromAssemblyContaining<AuthGetEndpoint>();//moze se navesti bilo koja klasa iz ovog projekta
 builder.Services.AddValidatorsFromAssemblyContaining<AppUserAddValidator>();
+
 
 
 

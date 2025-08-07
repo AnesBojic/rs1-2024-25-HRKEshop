@@ -1,0 +1,89 @@
+<div class="user-profile">
+
+  <mat-spinner *ngIf="loading"></mat-spinner>
+
+
+  <div *ngIf="!loading && userProfile && isEditing" class="form-wrapper-user-profile">
+  <form *ngIf="isEditing" [formGroup]="profileForm" class="form-user-profile">
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name"/>
+    </mat-form-field>
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Surname</mat-label>
+      <input matInput formControlName="surname"/>
+    </mat-form-field>
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="email"/>
+    </mat-form-field>
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>City</mat-label>
+      <input matInput formControlName="city"/>
+    </mat-form-field>
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Address</mat-label>
+      <input matInput formControlName="address"/>
+    </mat-form-field>
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Zipcode</mat-label>
+      <input matInput formControlName="zipCode"/>
+    </mat-form-field>
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Phone</mat-label>
+      <input matInput formControlName="phone"/>
+    </mat-form-field>
+
+  </form>
+    <div style="display: flex; gap: 10px">
+      <button mat-raised-button (click)="saveEdit()">Save changes</button>
+    <button mat-raised-button (click)="cancelEdit()">Cancel Edit</button>
+    </div>
+  </div>
+  <div *ngIf="!isEditing && userProfile" class="user-profile-details">
+    <div class="avatar-container"  (click)="triggerImageUpload()">
+      <img
+        [src]="imageInfo?.url"
+        (error)="onImageError($event)"
+        alt="no picture"
+        class="user-profile-avatar"
+      />
+      <div class="avatar-overlay">
+        <span>Change image</span>
+      </div>
+      <input
+        type="file"
+        #imageInput
+        accept="image/*"
+        (change)="onImageSelected($event)"
+        hidden/>
+    </div>
+    <h2>{{ userProfile.name }} {{ userProfile.surname }}</h2>
+    <div class="detail-container">
+    <p class="label-detail">Email</p>
+      <p class="inside-detail">{{userProfile.email}}</p>
+    </div>
+    <div class="detail-container">
+      <p class="label-detail">City</p>
+      <p class="inside-detail">{{userProfile.city}}</p>
+    </div>
+    <div class="detail-container">
+      <p class="label-detail">Address</p>
+      <p class="inside-detail">{{userProfile.address}}</p>
+    </div>
+    <div class="detail-container">
+      <p class="label-detail">Zipcode</p>
+      <p class="inside-detail">{{userProfile.zipCode}}</p>
+    </div>
+    <div class="detail-container">
+      <p class="label-detail">Phone</p>
+      <p class="inside-detail">{{userProfile.phone}}</p>
+    </div>
+
+    <button mat-raised-button (click)="startEdit()">Edit Profile</button>
+  </div>
+
+
+
+
+</div>

@@ -14,10 +14,18 @@ import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatOption, MatSelect} from '@angular/material/select';
 import {CustomTranslateLoader} from './services/custom-translate-loader';
+import {AuthInterceptorService} from './services/auth-services/auth-interceptor.service';
+import {AuthService} from './services/auth-services/auth.service';
+
+
+
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+
+
+
   ],
   imports: [
     BrowserAnimationsModule, // Potrebno za animacije
@@ -41,7 +49,7 @@ import {CustomTranslateLoader} from './services/custom-translate-loader';
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
-      useClass: MyAuthInterceptor,
+      useClass: AuthInterceptorService,
       multi: true // Ensures multiple interceptors can be used if needed
     },
     {
@@ -49,7 +57,7 @@ import {CustomTranslateLoader} from './services/custom-translate-loader';
       useClass: MyErrorHandlingInterceptor,
       multi: true // Dodaje ErrorHandlingInterceptor u lanac
     },
-    MyAuthService,
+    AuthService,
     provideAnimationsAsync() // Ensure MyAuthService is available for the interceptor
   ],
   bootstrap: [AppComponent]

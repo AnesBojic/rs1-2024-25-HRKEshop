@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
-import {catchError} from 'rxjs/operators';
+import {catchError, skip} from 'rxjs/operators';
 import {Observable, throwError} from 'rxjs';
 import {MySnackbarHelperService} from '../../modules/shared/snackbars/my-snackbar-helper.service';
 
@@ -10,11 +10,13 @@ export class MyErrorHandlingInterceptor implements HttpInterceptor {
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    const skipGlobalError = req.headers.get('X-Skip-Global-Error') === 'true';
     return next.handle(req).pipe(
       catchError((error: HttpErrorResponse) => {
         // Prikaži grešku korisniku
-        this.handleError(error);
-
+        if(!skipGlobalError) {
+          this.handleError(error);
+        }
         // Propustiti grešku dalje ako je potrebno
         return throwError(() => error);
       })

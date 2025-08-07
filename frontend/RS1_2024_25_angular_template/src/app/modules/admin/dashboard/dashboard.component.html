@@ -1,1 +1,80 @@
-<p>dashboard works!</p>
+<h2>All users</h2>
+
+<mat-form-field appearance="outline" style="width: 300px; margin-bottom: 16px;">
+  <mat-label>Search users</mat-label>
+  <input matInput [(ngModel)]="request.q" (input)="onSearchChange()" placeholder="Name, Email, Phone...">
+</mat-form-field>
+
+
+
+
+
+<div *ngIf="error" style="color: red; margin: 16px 0;">
+  {{ error }}
+</div>
+
+<div class="table-wrapper" style="position:relative">
+<table mat-table [dataSource]="pagedUsers.dataItems" class="mat-elevation-z8" *ngIf="pagedUsers && !error">
+
+
+  <ng-container matColumnDef="id">
+    <th mat-header-cell *matHeaderCellDef> ID </th>
+    <td mat-cell *matCellDef="let user"> {{ user.id }} </td>
+  </ng-container>
+
+
+  <ng-container matColumnDef="email">
+    <th mat-header-cell *matHeaderCellDef> Email </th>
+    <td mat-cell *matCellDef="let user"> {{ user.email }} </td>
+  </ng-container>
+
+
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef> Name </th>
+    <td mat-cell *matCellDef="let user"> {{ user.name }} {{ user.surname }} </td>
+  </ng-container>
+
+
+  <ng-container matColumnDef="roleName">
+    <th mat-header-cell *matHeaderCellDef> Role </th>
+    <td mat-cell *matCellDef="let user"> {{ user.roleName }} </td>
+  </ng-container>
+
+
+  <ng-container matColumnDef="status">
+    <th mat-header-cell *matHeaderCellDef> Status </th>
+    <td mat-cell *matCellDef="let user">
+      <span [ngClass]="user.isLocked ? 'locked' : 'active'">
+        {{ user.isLocked ? 'Locked' : 'Active' }}
+      </span>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="['id', 'email', 'name', 'roleName', 'status']"></tr>
+  <tr mat-row *matRowDef="let row; columns: ['id', 'email', 'name', 'roleName', 'status'];"></tr>
+</table>
+
+  <div *ngIf="loading" class="loading-overlay">
+    <mat-spinner diameter="50"></mat-spinner>
+  </div>
+
+</div>
+
+<mat-paginator
+  [length]="pagedUsers?.totalCount || 0"
+  [pageSize]="request.pageSize"
+  [pageSizeOptions]="[5, 10, 25]"
+  [pageIndex]="request.pageNumber - 1"
+  (page)="onPageChange($event)">
+</mat-paginator>
+
+<style>
+  .locked {
+    color: red;
+    font-weight: bold;
+  }
+  .active {
+    color: green;
+    font-weight: bold;
+  }
+</style>

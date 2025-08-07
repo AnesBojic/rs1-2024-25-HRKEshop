@@ -1,0 +1,73 @@
+<h2 style="text-align: center">Create your account</h2>
+
+<div class="signup-wrapper">
+
+  <div class="spinner-wrapper" *ngIf="loading">
+  <mat-spinner
+  mode="indeterminate"
+  color="primary"
+  diameter="50"
+  >
+
+  </mat-spinner>
+    </div>
+<form (ngSubmit)="onSubmit()" [formGroup]="signupForm" novalidate  class="signup-form">
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>First Name</mat-label>
+    <input matInput type="text" formControlName="firstName" placeholder="Enter your name" required>
+    <mat-error *ngIf="signupForm.get('firstName')?.hasError('required')">
+        First name is required
+    </mat-error>
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Last Name</mat-label>
+    <input matInput type="text" formControlName="lastName" placeholder="Enter your last name" required>
+    <mat-error *ngIf="signupForm.get('lastName')?.hasError('required')">
+          Last name is required
+    </mat-error>
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="full-width">
+  <mat-label>Email</mat-label>
+  <input matInput type="email"  formControlName="email" placeholder="Enter your email" required>
+    <mat-error *ngIf="signupForm.get('email')?.hasError('required')">
+        Email is required
+    </mat-error>
+    <mat-error *ngIf="signupForm.get('email')?.hasError('email')">
+      Please enter valid email
+    </mat-error>
+  </mat-form-field>
+<mat-form-field appearance="outline" class="full-width">
+  <mat-label>Password</mat-label>
+  <input matInput type="password" (input)="onPasswordInput()" formControlName="password" placeholder="Enter your password" required>
+  <mat-progress-bar
+  [value]="passwordStregth * (100/6)"
+  [color]="getStrengthColor(passwordStregth)"
+  mode="determinate">
+  </mat-progress-bar>
+  <mat-hint align="end"  [ngClass]="getStrengthClass(passwordStregth)" *ngIf="signupForm.get('password')?.touched || signupForm.get('password')?.dirty">
+    {{getStrengthLabel(passwordStregth)}}
+  </mat-hint>
+  <mat-error *ngIf="signupForm.get('password')?.hasError('required')">
+    Password is required
+  </mat-error>
+  <mat-error *ngIf="signupForm.get('password')?.hasError('minlength')">
+    Minimum six characters
+  </mat-error>
+</mat-form-field>
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Confirm Password</mat-label>
+    <input matInput type="password" formControlName="confirmPassword" placeholder="Confirm your password" required>
+    <mat-error *ngIf="signupForm.get('confirmPassword')?.hasError('required')">
+      Required
+    </mat-error>
+    <mat-error *ngIf="signupForm.get('confirmPassword')?.hasError('passwordMismatch')">
+      Passwords do not match
+    </mat-error>
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Phone</mat-label>
+    <input matInput type="phone" formControlName="phone" placeholder="Enter your phone">
+  </mat-form-field>
+  <button mat-raised-button color="primary" type="submit" class="signup-button" [disabled]="signupForm.invalid">Sign Up</button>
+</form>
+</div>

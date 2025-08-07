@@ -2,7 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Router} from '@angular/router';
 import {MyConfig} from '../../../my-config';
-import {MyAuthService} from '../../../services/auth-services/my-auth.service';
+import {AuthService} from '../../../services/auth-services/auth.service';
+import {AuthApi} from '../../../api/auth.api';
 
 @Component({
   selector: 'app-logout',
@@ -11,11 +12,10 @@ import {MyAuthService} from '../../../services/auth-services/my-auth.service';
   standalone: false
 })
 export class LogoutComponent implements OnInit {
-  private apiUrl = `${MyConfig.api_address}/auth/logout`;
-
   constructor(
     private httpClient: HttpClient,
-    private authService: MyAuthService,
+    private authService: AuthService,
+    private  authApi:AuthApi,
     private router: Router
   ) {
   }
@@ -25,18 +25,18 @@ export class LogoutComponent implements OnInit {
   }
 
   logout(): void {
-    this.httpClient.post<void>(this.apiUrl, {}).subscribe({
-      next: () => this.handleLogoutSuccessOrError(),
-      error: (error) => {
-        console.error('Error during logout:', error);
+    this.authApi.logout().subscribe({
+      next:()=> this.handleLogoutSuccessOrError(),
+      error:(error)=>{
+        console.error('Error during logout.',error);
         this.handleLogoutSuccessOrError();
       }
-    });
+    })
   }
 
   // Metoda za zajedničko uklanjanje tokena i preusmjeravanje
   private handleLogoutSuccessOrError(): void {
-    this.authService.setLoggedInUser(null);
+    this.authService.clearTokens();
     setTimeout(() => {
       this.router.navigate(['/auth/login']); // Preusmjeravanje na login nakon 3 sekunde
     }, 3000);

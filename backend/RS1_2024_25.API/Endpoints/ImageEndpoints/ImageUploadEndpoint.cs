@@ -1,5 +1,6 @@
 ﻿using Bogus;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using RS1_2024_25.API.Data;
 using RS1_2024_25.API.Data.Models.TenantSpecificTables.Modul2_Basic;
@@ -13,14 +14,17 @@ namespace RS1_2024_25.API.Endpoints.ImageEndpoints
 
     [Authorize]
     [Route("images/upload")]
-    public class ImageUploadEndpoint(ApplicationDbContext db,IFileService _iFileService) : MyEndpointBaseAsync
-        .WithRequest<ImageUploadRequest>
-        .WithResult<string>
+    public class ImageUploadEndpoint(ApplicationDbContext db,IFileService _iFileService,IAuthContext authContext) : MyEndpointBaseAsync
+        .WithRequest<ImageUploadEndpoint.ImageUploadRequest>
+        .WithActionResult<ImageUploadEndpoint.ImageUploadResponse>
     {
 
         [HttpPost]
-        public override async Task<string> HandleAsync([FromForm] ImageUploadRequest request, CancellationToken cancellationToken = default)
+        public override async Task<ActionResult<ImageUploadResponse>> HandleAsync([FromForm] ImageUploadRequest request, CancellationToken cancellationToken = default)
         {
+
+            if (request.Imageabletype == "users" && request.ImageableId != authContext.AppUserId)
+                return Forbid("You cannot upload image for another user");
 
 
 
@@ -52,27 +56,37 @@ namespace RS1_2024_25.API.Endpoints.ImageEndpoints
             db.ImagesAll.Add(image);
             await db.SaveChangesAsync(cancellationToken);
 
-            return $"Image uploaded successfully with an id {image.ID}";
+            return Ok(new ImageUploadResponse
+            {
+                ImageId = image.ID,
+                Url = image.Url
+            });
 
             
         }
+        public class ImageUploadRequest
+        {
+            public required string Name { get; set; }
 
+            public required int ImageableId { get; set; }
+
+            public required string Imageabletype { get; set; }
+
+            public required IFormFile File { get; set; }
+
+        }
+        public class ImageUploadResponse
+        {
+
+            public int ImageId { get; set; }
+            public string Url { get; set; }
+
+        }
 
 
     }
 
 
-    public class ImageUploadRequest
-    {
-        public required string Name { get; set; }
+    
 
-        public required int ImageableId { get; set; }
-
-        public required string Imageabletype { get; set; }
-
-        public required IFormFile File { get; set; }
-
-
-
-    }
 }

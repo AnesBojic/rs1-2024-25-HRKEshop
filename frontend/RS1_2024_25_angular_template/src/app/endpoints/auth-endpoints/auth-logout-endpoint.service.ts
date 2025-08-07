@@ -4,14 +4,15 @@ import {Observable} from 'rxjs';
 import {MyConfig} from '../../my-config';
 import {MyAuthService} from '../../services/auth-services/my-auth.service';
 import {MyBaseEndpointAsync} from '../../helper/my-base-endpoint-async.interface';
+import {AuthService} from '../../services/auth-services/auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthLogoutEndpointService implements MyBaseEndpointAsync<void, void> {
-  private apiUrl = `${MyConfig.api_address}/auth/logout`;
+  private apiUrl = `${MyConfig.api_address}/auth/logout1`;
 
-  constructor(private httpClient: HttpClient, private authService: MyAuthService) {
+  constructor(private httpClient: HttpClient, private authService: AuthService) {
   }
 
   handleAsync() {
@@ -19,14 +20,16 @@ export class AuthLogoutEndpointService implements MyBaseEndpointAsync<void, void
       this.httpClient.post<void>(this.apiUrl, {}).subscribe({
         next: () => {
           // Nakon uspješnog odgovora sa servera, uklonite token na klijentu
-          this.authService.setLoggedInUser(null); // Uklanja token iz localStorage
+          /*this.authService.setLoggedInUser(null); // Uklanja token iz localStorage*/
+          this.authService.clearTokens()
           observer.next();
           observer.complete();
         },
         error: (error) => {
           console.error('Error during logout:', error);
           observer.error(error);
-          this.authService.setLoggedInUser(null); // Uklanja token iz localStorage
+          /*this.authService.setLoggedInUser(null); // Uklanja token iz localStorage*/
+          this.authService.clearTokens()
         }
       });
     });

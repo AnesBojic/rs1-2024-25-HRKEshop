@@ -11,7 +11,7 @@ namespace RS1_2024_25.Tests.Services
 {
     public class JwtTestHttpContextAccessorHelper
     {
-        public static IHttpContextAccessor CreateWithJwtAuthenticatedUser(string userId="testUser",string role ="Admin",string tenantId="1",string email="asim_asim@gmail.com")
+        public static IHttpContextAccessor CreateWithJwtAuthenticatedUser(string userId="55",string role ="Admin",string tenantId="1",string email="asim_asim@gmail.com")
         {
             var mocKHttpContextAccessor = new Mock<IHttpContextAccessor>();
 

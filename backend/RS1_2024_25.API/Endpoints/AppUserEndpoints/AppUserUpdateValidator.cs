@@ -38,10 +38,7 @@ namespace RS1_2024_25.API.Endpoints.AppUserEndpoints
             RuleFor(x => x.ZipCode)
                 .Matches(@"\d{4,10}$").WithMessage("ZipCode must be between 4 and 10 digits")
                 .When(x => !string.IsNullOrWhiteSpace(x.ZipCode));
-            RuleFor(x => x.RoleID)
-                .MustAsync(async (request, roleId, cancellationtoken) => await dbContext.Roles.AnyAsync(r => r.ID == roleId, cancellationtoken))
-                .WithMessage("RoleID must refer to an existing role")
-                .When(x => x.RoleID.HasValue);
+            
 
 
 

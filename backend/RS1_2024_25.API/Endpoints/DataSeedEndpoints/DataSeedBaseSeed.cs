@@ -2,6 +2,7 @@
 using Bogus;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Extensions;
 using RS1_2024_25.API.Data;
 using RS1_2024_25.API.Data.Enums;
 using RS1_2024_25.API.Data.Models.SharedTables;
@@ -22,7 +23,7 @@ namespace RS1_2024_25.API.Endpoints.DataSeedEndpoints
         public override async Task<string> HandleAsync(CancellationToken cancellationToken = default)
         {
 
-            
+
 
             if (!db.Tenants.Any())
             {
@@ -39,9 +40,9 @@ namespace RS1_2024_25.API.Endpoints.DataSeedEndpoints
                 await db.SaveChangesAsync(cancellationToken);
 
             }
-            
 
-            
+
+
             if (!db.Roles.Any())
             {
                 var roles = new List<Role>
@@ -56,7 +57,7 @@ namespace RS1_2024_25.API.Endpoints.DataSeedEndpoints
 
             }
 
-            if(!db.AppUsersAll.Any())
+            if (!db.AppUsersAll.Any())
             {
                 var faker = new Faker();
 
@@ -87,7 +88,7 @@ namespace RS1_2024_25.API.Endpoints.DataSeedEndpoints
                     user.SetPassword("test");
 
 
-                    if(faker.Random.Bool(0.05f))
+                    if (faker.Random.Bool(0.05f))
                     {
                         user.LockAccount(faker.Random.Int(1, 30));
                     }
@@ -96,10 +97,10 @@ namespace RS1_2024_25.API.Endpoints.DataSeedEndpoints
                     users.Add(user);
                 }
 
-              await db.AppUsersAll.AddRangeAsync(users);
+                await db.AppUsersAll.AddRangeAsync(users);
                 await db.SaveChangesAsync(cancellationToken);
             }
-            if(!db.ImagesAll.Any())
+            if (!db.ImagesAll.Any())
             {
                 Console.WriteLine("Seeding images for users ? ");
 
@@ -107,7 +108,7 @@ namespace RS1_2024_25.API.Endpoints.DataSeedEndpoints
 
                 var images = new List<Image>();
 
-                foreach(var user in users)
+                foreach (var user in users)
                 {
                     images.Add(
                         new Image
@@ -150,44 +151,204 @@ namespace RS1_2024_25.API.Endpoints.DataSeedEndpoints
                 };
                 await db.Colors.AddRangeAsync(colors);
                 await db.SaveChangesAsync(cancellationToken);
-            };
+            }
+            ;
 
-            if (!db.Brands.Any())
+            if (!db.BrandsAll.Any())
             {
+                var faker = new Faker();
                 var brands = new List<Brand>
                 {
-                    new Brand { Name = "Nike" },
-                    new Brand { Name = "Adidas" },
-                    new Brand { Name = "Puma" },
-                    new Brand { Name = "Under Armour" },
-                    new Brand { Name = "Reebook" },
+                    new Brand { Name = "Nike", TenantId =  1},
+                    new Brand { Name = "Adidas",TenantId =  1 },
+                    new Brand { Name = "Puma",TenantId =  1 },
+                    new Brand { Name = "Under Armour",TenantId =  1 },
+                    new Brand { Name = "Reebook",TenantId =  1 },
 
                 };
                 await db.BrandsAll.AddRangeAsync(brands);
                 await db.SaveChangesAsync(cancellationToken);
             }
             ;
-
-            if (!db.Products.Any())
+            if (!db.SizeTypesAll.Any())
             {
-                var products = new List<Product>
+                var sizeTypes = new List<SizeType>
                 {
-                    new Product { Name = "Nike zoom", Price = 150, Gender = Gender.Male, ColorId = 4,  BrandId = 2 },
-                    new Product { Name = "D Rose" , Price = 200, Gender = Gender.Male, ColorId = 5, BrandId = 3 },
-                    new Product { Name = "Puma", Price = 100, Gender = Gender.Female, ColorId = 1, BrandId = 4 },
-                    new Product { Name = "Curry 2", Price = 250, Gender = Gender.Female, ColorId = 3, BrandId = 5 },
+                    new SizeType{Name = "Men's clothing", TenantId = 1},
+                    new SizeType {Name = "Women's clothing", TenantId = 1},
+                    new SizeType {Name = "Kids' Clothing", TenantId = 1},
+                    new SizeType{Name = "Shoes", TenantId = 1},
+                    new SizeType {Name = "Toys", TenantId = 1},
+                    new SizeType {Name = "Furniture", TenantId = 1},
+                    new SizeType {Name = "Bicycles", TenantId = 1},
+                    new SizeType {Name = "One Size Fits All", TenantId = 1}
+
+
+                };
+                await db.SizeTypesAll.AddRangeAsync(sizeTypes);
+                await db.SaveChangesAsync(cancellationToken);
+            }
+            if (!db.SizesAll.Any())
+            {
+                var sizesToSeed = new List<Size>();
+                var sizeTypes = await db.SizeTypesAll.ToListAsync();
+
+                foreach (var st in sizeTypes)
+                {
+                    switch (st.Name)
+                    {
+                        case "Men's clothing":
+                        case "Women's clothing":
+                        case "Kids' Clothing":
+                            sizesToSeed.AddRange(new[]
+                            {
+                    new Size { Value = "XS", SizeTypeId = st.ID, TenantId = 1 },
+                    new Size { Value = "S", SizeTypeId = st.ID, TenantId = 1 },
+                    new Size { Value = "M", SizeTypeId = st.ID, TenantId = 1 },
+                    new Size { Value = "L", SizeTypeId = st.ID, TenantId = 1 },
+                    new Size { Value = "XL", SizeTypeId = st.ID, TenantId = 1 }
+                });
+                            break;
+
+                        case "Shoes":
+                            sizesToSeed.AddRange(Enumerable.Range(36, 10).Select(i =>
+                                new Size { Value = i.ToString(), SizeTypeId = st.ID, TenantId = 1 }));
+                            break;
+
+                        case "Toys":
+                        case "Furniture":
+                        case "Bicycles":
+                            sizesToSeed.AddRange(new[]
+                            {
+                    new Size { Value = "Small", SizeTypeId = st.ID, TenantId = 1 },
+                    new Size { Value = "Medium", SizeTypeId = st.ID, TenantId = 1 },
+                    new Size { Value = "Large", SizeTypeId = st.ID, TenantId = 1 }
+                });
+                            break;
+
+                        case "One Size Fits All":
+                            sizesToSeed.Add(new Size
+                            {
+                                Value = "One Size",
+                                SizeTypeId = st.ID,
+                                TenantId = 1
+                            });
+                            break;
+                    }
+
                     
 
 
-    };
+                }
+
+                await db.SizesAll.AddRangeAsync(sizesToSeed);
+                await db.SaveChangesAsync();
+            }
+            if(!db.ProductsAll.Any())
+            {
+                var faker = new Faker();
+                var brands = await db.BrandsAll.ToListAsync();
+                var colors = await db.Colors.ToListAsync();
+
+                var products = new List<Product>();
+
+                for (int i = 0; i < 30; i++)
+                {
+                    var product = new Product
+                    {
+                        Name = faker.Commerce.ProductName(),
+                        Price = faker.Random.Float(20, 200),
+                        ColorId = faker.PickRandom(colors).ID,
+                        BrandId = faker.PickRandom(brands).ID,
+                        Gender = faker.PickRandom<Gender>(),
+                        TenantId = 1
+
+
+
+
+                    };
+
+                    products.Add(product);
+
+                }
+
                 await db.ProductsAll.AddRangeAsync(products);
+                await db.SaveChangesAsync(cancellationToken);
+                
+
+
+
+            }
+
+            if(!db.ProductsSizesAll.Any())
+            {
+                var faker = new Faker();
+                //Dobit cemo sve iz tenantId=1 jer je postavljen
+                var products = await db.ProductsAll.ToListAsync();
+                var sizes = await db.SizesAll.ToListAsync();
+
+                var productSizes = new List<ProductSize>();
+
+                foreach (var product in products)
+                {
+                    var availableSizes = faker.PickRandom(sizes, faker.Random.Int(2, 5)).ToList();
+
+                    foreach (var size in availableSizes)
+                    {
+                        var minPrice = (decimal)Math.Max(1, product.Price - 20);
+                        productSizes.Add(new ProductSize
+                        {
+                            ProductId = product.ID,
+                            SizeId = size.ID,
+                            TenantId = 1,
+                            Price = faker.Random.Decimal(minPrice,(decimal)product.Price+20),
+                            Stock = faker.Random.Int(0,122)
+
+
+                        });
+
+
+                    }
+
+
+                }
+                await db.ProductsSizesAll.AddRangeAsync(productSizes);
+                await db.SaveChangesAsync();
+
+
+
+            }
+
+            if (!db.CategoryAll.Any())
+            {
+                var category = new List<Category>
+                {
+                    new Category { Name = "T shirt" },
+                    new Category { Name = "Shirt" },
+                    new Category { Name = "Shorts" },
+                    new Category { Name = "Pants" },
+                    new Category { Name = "Sneakers" },
+                   
+                };
+                await db.CategoryAll.AddRangeAsync(category);
                 await db.SaveChangesAsync(cancellationToken);
             }
             ;
 
+            if (!db.Categories_ProductsAll.Any())
+            {
+                var categoryProduct = new List<categories_products>
+                {
+                    new categories_products { ProductId = 2, CategoryId = 5 },
+                    new categories_products { ProductId = 3, CategoryId = 5 },
+                    new categories_products {ProductId = 5, CategoryId = 5},
+                  
 
-
-
+                };
+                await db.Categories_ProductsAll.AddRangeAsync(categoryProduct);
+                await db.SaveChangesAsync(cancellationToken);
+            }
+            ;
 
             await db.SaveChangesAsync(cancellationToken);
 
@@ -195,7 +356,5 @@ namespace RS1_2024_25.API.Endpoints.DataSeedEndpoints
             return "Data generated successfully :D";
 
         }
-
-
     }
 }

@@ -6,13 +6,17 @@ import {LoginComponent} from './login/login.component';
 import {RegisterComponent} from './register/register.component';
 import {ForgetPasswordComponent} from './forget-password/forget-password.component';
 import {TwoFactorComponent} from './two-factor/two-factor.component';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {LogoutComponent} from './logout/logout.component';
 import {AuthLayoutComponent} from './auth-layout/auth-layout.component';
-import {MatButton} from "@angular/material/button";
-import {MatSlideToggle} from '@angular/material/slide-toggle';
 import {TranslatePipe} from "@ngx-translate/core";
 import {SharedModule} from "../shared/shared.module";
+import { SignupComponent } from './signup/signup.component';
+import {MaterialModule} from '../material/material.module';
+import {MatSlideToggle} from '@angular/material/slide-toggle';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
+import { ResendEmailComponent } from './resend-email/resend-email.component';
 
 
 @NgModule({
@@ -22,16 +26,24 @@ import {SharedModule} from "../shared/shared.module";
     ForgetPasswordComponent,
     TwoFactorComponent,
     LogoutComponent,
-    AuthLayoutComponent
+    AuthLayoutComponent,
+    SignupComponent,
+    ResetPasswordComponent,
+    ConfirmEmailComponent,
+    ResendEmailComponent
   ],
   imports: [
     CommonModule,
     AuthRoutingModule,
     FormsModule,
-    MatButton,
-    MatSlideToggle,
     TranslatePipe,
-    SharedModule
+    SharedModule,
+    MaterialModule,
+    ReactiveFormsModule,
+    MatSlideToggle,
+    MaterialModule
+
+
   ]
 })
 export class AuthModule {

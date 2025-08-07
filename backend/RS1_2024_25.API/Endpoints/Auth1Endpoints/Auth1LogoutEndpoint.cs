@@ -24,7 +24,7 @@ namespace RS1_2024_25.API.Endpoints.Auth1Endpoints
 
             var userId = int.Parse(userIdStr);
 
-            var user = await db.AppUsersAll.FirstOrDefaultAsync(u => u.ID == userId, cancellationToken);
+            var user = await db.AppUsers.FirstOrDefaultAsync(u => u.ID == userId, cancellationToken);
             if (user == null)
             {
                 return NotFound("User not found");

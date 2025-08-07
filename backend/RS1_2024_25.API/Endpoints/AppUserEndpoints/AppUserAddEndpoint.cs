@@ -4,15 +4,18 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RS1_2024_25.API.Data;
 using RS1_2024_25.API.Data.Models.TenantSpecificTables.Modul1_Auth;
+using RS1_2024_25.API.Data.Models.TenantSpecificTables.Modul2_Basic;
 using RS1_2024_25.API.Helper;
 using RS1_2024_25.API.Helper.Api;
+using RS1_2024_25.API.Services;
+using RS1_2024_25.API.Services.Interfaces;
 using static RS1_2024_25.API.Endpoints.AppUserEndpoints.AppUserAddEndpoint;
 
 namespace RS1_2024_25.API.Endpoints.AppUserEndpoints
 {
-    [Authorize]
+    
     [Route("appusers/add")]
-    public class AppUserAddEndpoint(ApplicationDbContext db,IValidator<AppUserAddRequest> validator) : MyEndpointBaseAsync
+    public class AppUserAddEndpoint(ApplicationDbContext db,IEmailService emailService,IValidator<AppUserAddRequest> validator) : MyEndpointBaseAsync
         .WithRequest<AppUserAddRequest>
         .WithActionResult<AppUserAddResponse>
     {
@@ -33,15 +36,20 @@ namespace RS1_2024_25.API.Endpoints.AppUserEndpoints
                 Surname = request.Surname,
                 Email = request.Email,
                 Phone = request.Phone,
-                RoleID = 1,
-               
+                RoleID = 3,
+                EmailVerifiedAt = null,
+                
+                
+
 
             };
             newUser.SetPassword(request.Password);
-
             db.AppUsersAll.Add(newUser);
+
             await db.SaveChangesAsync();
 
+            await emailService.SendEmailVerificationAsync(newUser,cancellationToken);
+            
 
             return new AppUserAddResponse
             {

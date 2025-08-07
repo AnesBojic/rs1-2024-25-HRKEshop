@@ -2,7 +2,7 @@ import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {UnauthorizedComponent} from './unauthorized/unauthorized.component';
-import {RouterLink} from '@angular/router';
+import {RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
 import {MyDialogSimpleComponent} from './dialogs/my-dialog-simple/my-dialog-simple.component';
 import {
   MatDialogActions,
@@ -27,6 +27,11 @@ import {MyDropdownComponent} from './my-reactive-forms/my-dropdown/my-dropdown.c
 import {MatOption, MatSelect} from '@angular/material/select';
 import {MyChatComponent} from './mychat/mychat.component';
 import {MatSpinner} from '@angular/material/progress-spinner';
+import { NavbarComponent } from './navbar/navbar.component';
+import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
+import { AppShellComponent } from './app-shell/app-shell.component';
+import {MatDivider, MatListItem} from "@angular/material/list";
+import {MatSidenav, MatSidenavContainer, MatSidenavContent} from "@angular/material/sidenav";
 
 @NgModule({
   declarations: [
@@ -37,6 +42,8 @@ import {MatSpinner} from '@angular/material/progress-spinner';
     MyInputTextComponent,
     MyDropdownComponent,
     MyChatComponent,
+    NavbarComponent,
+    AppShellComponent,
   ],
   imports: [
     CommonModule,
@@ -63,7 +70,17 @@ import {MatSpinner} from '@angular/material/progress-spinner';
     MatLabel,
     MatSelect,
     MatOption,
-    MatSpinner
+    MatSpinner,
+    MatMenu,
+    MatMenuTrigger,
+    MatMenuItem,
+    RouterLinkActive,
+    MatListItem,
+    MatSidenav,
+    MatSidenavContainer,
+    MatSidenavContent,
+    RouterOutlet,
+    MatDivider
   ],
   exports: [
     UnauthorizedComponent, // Omogućavamo ponovno korištenje UnauthorizedComponent
@@ -72,7 +89,8 @@ import {MatSpinner} from '@angular/material/progress-spinner';
     ReactiveFormsModule,
     MyPageProgressbarComponent,
     MyInputTextComponent,
-    MyDropdownComponent
+    MyDropdownComponent,
+    NavbarComponent
   ]
 })
 export class SharedModule {

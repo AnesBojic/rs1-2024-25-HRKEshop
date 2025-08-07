@@ -1,0 +1,45 @@
+<mat-sidenav-container>
+
+  <mat-sidenav #sidenav mode="over" class="mobile-sidenav">
+    <nav>
+      <a
+      mat-list-item
+      *ngFor="let navlink of NAV_LINKS"
+      [routerLink]="navlink.route"
+      routerLinkActive="active-link"
+      (click)="sidenav.close()"
+      >
+        {{navlink.label}}
+      </a>
+      <mat-divider></mat-divider>
+      <ng-container *ngIf="!authService.isLoggedIn()">
+        <button
+        mat-list-item
+        routerLink="auth/login"
+        (click)="sidenav.close()"
+        >
+          Login
+        </button>
+      </ng-container>
+      <button
+      mat-list-item
+      *ngFor="let action of profileActions"
+      (click)="
+      sidenav.close();
+      action.action()
+"
+      >
+        {{action.label}}
+      </button>
+
+    </nav>
+
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <app-navbar [toggleSideNav]="sidenav.toggle.bind(sidenav)"></app-navbar>
+    <div class="main-content">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+
+</mat-sidenav-container>

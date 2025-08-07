@@ -1,0 +1,38 @@
+
+<mat-toolbar  class="navbar">
+
+  <button
+    mat-icon-button
+  (click)="toggleSideNav()"
+    class="mobile-menu-button"
+    aria-label="Toggle navigation menu"
+  >
+<mat-icon>menu</mat-icon>
+  </button>
+
+
+<span class="logo">
+  <img src="/images/HRKEShop-logo.png" alt="" class="navbar-logo">
+</span>
+
+  <span class="spacer"></span>
+  <a mat-button *ngFor="let navlink of NAV_LINKS" [routerLink]="navlink.route" routerLinkActive="active-link" class="navbarButton">{{navlink.label}}</a>
+  <span class="spacer"></span>
+
+
+
+  <ng-container *ngIf="!isLogged">
+    <a mat-button routerLink="/auth/login" class="navbarButton">Login</a>
+  </ng-container>
+
+<ng-container *ngIf="isLogged">
+  <span class="userFullName">{{name}}</span>
+<button mat-icon-button [matMenuTriggerFor]="userMenu" class="avatar-button">
+  <img [src]="imageInfo" (error)="onImageError($event)" alt="User-avatar" class="user-avatar-img" loading="lazy">
+</button>
+  <mat-menu #userMenu="matMenu">
+    <button mat-menu-item *ngFor="let action of profileActions" (click)="action.action()">{{action.label}}</button>
+  </mat-menu>
+</ng-container>
+
+</mat-toolbar>

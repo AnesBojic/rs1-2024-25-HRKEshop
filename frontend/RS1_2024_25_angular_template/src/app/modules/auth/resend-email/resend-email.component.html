@@ -1,0 +1,10 @@
+<div class="email-resend-wrapper">
+  <mat-card class="full-width email-resend-card">
+    <h2>Hello {{this.name}}, please confirm your mail</h2>
+    <img src="images/email-resend.png" class="image-resend">
+    <div class="email-resend-downButtonText">
+      <p>Did not get your confirmation email?</p>
+      <button mat-raised-button class="resend-email-button" (click)="onClickResendMailAndSnackbar()">Resend Email Confirmation</button>
+    </div>
+  </mat-card>
+</div>

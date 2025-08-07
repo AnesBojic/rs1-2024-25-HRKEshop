@@ -13,7 +13,7 @@ export class AppComponent {
     {code: 'en', label: 'English'}
   ];
 
-  title = 'RS1 - 2024-25 - template 1 ';
+  title = 'HRKEShop';
 
   constructor(private translate: TranslateService) {
     // Postavi default jezik

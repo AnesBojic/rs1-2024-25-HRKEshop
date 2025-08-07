@@ -17,6 +17,7 @@ import {
 } from './rxjs-subject-message-example/rxjs-subject-message-example.component';
 import {StudentsComponent} from './students/students.component';
 import {StudentEditComponent} from './students/student-edit/student-edit.component';
+import {AuthGuard} from '../../auth-guards/auth-guard.service';
 
 //komentar
 const routes: Routes = [
@@ -25,7 +26,7 @@ const routes: Routes = [
     component: AdminLayoutComponent,
     children: [
       {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
-      {path: 'dashboard', component: DashboardComponent},
+      {path: 'dashboard', component: DashboardComponent,canActivate:[AuthGuard],data:{isAdmin:true}},
       {path: 'cities1', component: Cities1Component},
       {path: 'cities2', component: Cities2Component},
       {path: 'cities3', component: Cities3Component},
@@ -41,7 +42,7 @@ const routes: Routes = [
       {path: 'order', component: ReservationComponent},
       {path: 'chat', component: MyChatComponent},
       {path: 'rxjs-subject-message-example', component: RxjsSubjectMessageExampleComponent},
-      {path: '**', component: AdminErrorPageComponent} // Default ruta
+      {path: '**', component: AdminErrorPageComponent,} // Default ruta
     ]
   },
 ];
