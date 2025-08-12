@@ -1,36 +1,41 @@
-<h2>Lista proizvoda</h2>
+<div class="product-container">
+  <div class="header">
+    <h2>Lista proizvoda</h2>
+    <button *ngIf="isAdmin" class="btn-add" (click)="goToNewProduct()">
+      ➕ Dodaj novi proizvod
+    </button>
+  </div>
 
-<!-- Filter -->
-<div>
-  <input [(ngModel)]="filter.q" placeholder="Pretraži proizvode..." (keyup.enter)="loadData()" />
-  <button (click)="loadData()">Traži</button>
-</div>
+  <div class="products-grid">
+    <div class="product-card" *ngFor="let p of products">
+      <img [src]="getProductImageUrl(p)"
+           (error)="onImageError($event)"
+           alt="{{ p.name }}" />
 
-<!-- Tabela sa podacima -->
-<table *ngIf="pagedData" class="table table-bordered mt-3">
-  <thead>
-  <tr>
-    <th>Naziv</th>
-    <th>Cijena</th>
-    <th>Spol</th>
-    <th>Brend ID</th>
-    <th>Boja ID</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr *ngFor="let p of pagedData.dataItems">
-    <td>{{ p.name }}</td>
-    <td>{{ p.price }} KM</td>
-    <td>{{ p.gender }}</td>
-    <td>{{ p.brandId }}</td>
-    <td>{{ p.colorId }}</td>
-  </tr>
-  </tbody>
-</table>
+      <div class="card-body">
+        <h3>{{ p.name }}</h3>
+        <p class="price">{{ p.price | currency:'BAM':'symbol' }}</p>
+      </div>
 
-<!-- Paginacija -->
-<div *ngIf="pagedData" class="pagination">
-  <button (click)="prev()" [disabled]="!pagedData.hasPrevious">❮ Prethodna</button>
-  <span>Stranica {{ pagedData.currentPage }} od {{ pagedData.totalPages }}</span>
-  <button (click)="next()" [disabled]="!pagedData.hasNext">Sljedeća ❯</button>
+      <div class="card-actions" *ngIf="isAdmin">
+        <button class="btn-edit" (click)="editProduct(p.id)">✏ Uredi</button>
+        <button class="btn-delete" (click)="deleteProduct(p.id)">🗑 Obriši</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Paginacija -->
+  <div class="pagination">
+    <button [disabled]="currentPage === 1"
+            (click)="loadProducts(currentPage - 1)">
+      ◀ Prethodna
+    </button>
+
+    <span>Stranica {{ currentPage }} / {{ totalPages }}</span>
+
+    <button [disabled]="currentPage === totalPages"
+            (click)="loadProducts(currentPage + 1)">
+      Sljedeća ▶
+    </button>
+  </div>
 </div>

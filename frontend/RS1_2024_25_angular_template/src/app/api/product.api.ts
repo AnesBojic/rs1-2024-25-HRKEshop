@@ -9,10 +9,8 @@ import {
   ProductGetByIdResponse,
   ProductUpdateOrInsertRequest,
   MyPagedList
-
-} from '../dto/product.dto'; // Ako su svi DTO-i u jednom fajlu
+} from '../dto/product.dto';
 import { httpOptionsHelper } from '../helper/http-options.helper';
-
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +21,6 @@ export class ProductsApi {
 
   constructor(private http: HttpClient) {}
 
-  // Dohvati sve proizvode (bez filtera)
   getAll(): Observable<ProductGetAll1Response[]> {
     return this.http.get<ProductGetAll1Response[]>(
       `${this.baseUrl}/products/all`,
@@ -31,7 +28,13 @@ export class ProductsApi {
     );
   }
 
-  // Dohvati proizvode s filterima i paginacijom
+  getAllPaged(pageNumber: number = 1, pageSize: number = 10) {
+    return this.http.get<MyPagedList<ProductGetAll3Response>>(
+      `${this.baseUrl}/product/filter?pageNumber=${pageNumber}&pageSize=${pageSize}`,
+      httpOptionsHelper()
+    );
+  }
+
   filter(request: ProductGetAll3Request): Observable<MyPagedList<ProductGetAll3Response>> {
     let params = new HttpParams()
       .set('pageNumber', request.pageNumber)
@@ -53,7 +56,6 @@ export class ProductsApi {
     );
   }
 
-  // Dohvati jedan proizvod po ID-u
   getById(id: number): Observable<ProductGetByIdResponse> {
     return this.http.get<ProductGetByIdResponse>(
       `${this.baseUrl}/product/${id}`,
@@ -61,7 +63,6 @@ export class ProductsApi {
     );
   }
 
-  // Dodaj ili ažuriraj proizvod
   updateOrInsert(data: ProductUpdateOrInsertRequest): Observable<number> {
     return this.http.post<number>(
       `${this.baseUrl}/products/UpdateOrInsert`,
@@ -70,7 +71,6 @@ export class ProductsApi {
     );
   }
 
-  // Obriši proizvod po ID-u
   delete(id: number): Observable<void> {
     return this.http.delete<void>(
       `${this.baseUrl}/products/delete/${id}`,

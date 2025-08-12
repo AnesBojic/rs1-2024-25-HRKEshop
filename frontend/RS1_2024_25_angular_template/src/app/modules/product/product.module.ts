@@ -10,7 +10,7 @@ import { ProductFormComponent } from './product-form/product-form.component';
 
 @NgModule({
   declarations: [
-    ProductListComponent,
+    ProductListComponent, // made it non standalone
     ProductFormComponent
   ],
   imports: [

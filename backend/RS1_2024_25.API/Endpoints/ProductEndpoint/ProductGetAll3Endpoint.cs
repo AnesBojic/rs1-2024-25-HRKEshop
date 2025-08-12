@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace RS1_2024_25.API.Endpoints.ProductEndpoints;
 
 //sa paging i sa filterom
-[Authorize]
+//[Authorize]
 [Route("product")]
 public class ProductGetAll3Endpoint(ApplicationDbContext db) : MyEndpointBaseAsync
     .WithRequest<ProductGetAll3Request>
