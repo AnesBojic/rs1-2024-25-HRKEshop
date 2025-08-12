@@ -1,7 +1,7 @@
 <div class="product-container">
   <div class="header">
     <h2>Lista proizvoda</h2>
-    <button *ngIf="isAdmin" class="btn-add" (click)="goToNewProduct()">
+    <button class="btn-add" (click)="goToNewProduct()">
       ➕ Dodaj novi proizvod
     </button>
   </div>
@@ -17,7 +17,7 @@
         <p class="price">{{ p.price | currency:'BAM':'symbol' }}</p>
       </div>
 
-      <div class="card-actions" *ngIf="isAdmin">
+      <div class="card-actions">
         <button class="btn-edit" (click)="editProduct(p.id)">✏ Uredi</button>
         <button class="btn-delete" (click)="deleteProduct(p.id)">🗑 Obriši</button>
       </div>

@@ -5,7 +5,6 @@
   <div>
     <label>Naziv:</label>
     <input type="text" formControlName="name" />
-
   </div>
 
   <div>
@@ -16,19 +15,27 @@
   <div>
     <label>Spol:</label>
     <select formControlName="gender">
-      <option [value]="0">Muški</option>
-      <option [value]="1">Ženski</option>
+      <option value="" disabled hidden>-- Odaberite spol --</option>
+      <option [value]="1">Muški</option>
+      <option [value]="2">Ženski</option>
+      <option [value]="3">Ostalo</option>
     </select>
   </div>
 
   <div>
-    <label>Boja ID:</label>
-    <input type="number" formControlName="colorId" />
+    <label>Boja:</label>
+    <select formControlName="colorId">
+      <option value="" disabled hidden>-- Odaberite boju --</option>
+      <option *ngFor="let color of colors" [value]="color.id">{{ color.name }}</option>
+    </select>
   </div>
 
   <div>
-    <label>Brend ID:</label>
-    <input type="number" formControlName="brandId" />
+    <label>Brend:</label>
+    <select formControlName="brandId">
+      <option value="" disabled hidden>-- Odaberite brend --</option>
+      <option *ngFor="let brand of brands" [value]="brand.id">{{ brand.name }}</option>
+    </select>
   </div>
 
   <button type="submit" [disabled]="form.invalid">Spremi</button>
