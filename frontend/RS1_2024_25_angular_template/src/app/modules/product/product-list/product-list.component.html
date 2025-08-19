@@ -1,11 +1,56 @@
 <div class="product-container">
+
+  <!-- Header -->
   <div class="header">
-    <h2>Lista proizvoda</h2>
+    <h2>{{ 'PRODUCT.TITLE_CREATE' | translate }}</h2>
     <button class="btn-add" (click)="goToNewProduct()">
-      ➕ Dodaj novi proizvod
+      {{ 'PRODUCT.BUTTON_ADD' | translate }}
     </button>
   </div>
 
+  <!-- Filters -->
+  <div class="filters">
+
+    <!-- Search -->
+    <input type="text"
+           placeholder="🔍 {{ 'PRODUCT.NAME_LABEL' | translate }}"
+           [(ngModel)]="filters.q"
+           (ngModelChange)="loadProducts(1)" />
+
+    <!-- Gender -->
+    <select [(ngModel)]="filters.gender" (ngModelChange)="loadProducts(1)">
+      <option [ngValue]="undefined">{{ 'PRODUCT.GENDER_LABEL' | translate }}</option>
+      <option [ngValue]="1">{{ 'PRODUCT.MALE' | translate }}</option>
+      <option [ngValue]="2">{{ 'PRODUCT.FEMALE' | translate }}</option>
+      <option [ngValue]="3">{{ 'PRODUCT.OTHER' | translate }}</option>
+    </select>
+
+    <!-- Brand -->
+    <select [(ngModel)]="filters.brandId" (ngModelChange)="loadProducts(1)">
+      <option [ngValue]="undefined">{{ 'PRODUCT.BRAND_LABEL' | translate }}</option>
+      <option *ngFor="let brand of brands" [ngValue]="brand.id">{{ brand.name }}</option>
+    </select>
+
+    <!-- Color -->
+    <select [(ngModel)]="filters.colorId" (ngModelChange)="loadProducts(1)">
+      <option [ngValue]="undefined">{{ 'PRODUCT.COLOR_LABEL' | translate }}</option>
+      <option *ngFor="let color of colors" [ngValue]="color.id">{{ color.name }}</option>
+    </select>
+
+    <!-- Min price -->
+    <input type="number"
+           placeholder="{{ 'PRODUCT.PRICE_LABEL' | translate }} (min)"
+           [(ngModel)]="filters.minPrice"
+           (ngModelChange)="loadProducts(1)" />
+
+    <!-- Max price -->
+    <input type="number"
+           placeholder="{{ 'PRODUCT.PRICE_LABEL' | translate }} (max)"
+           [(ngModel)]="filters.maxPrice"
+           (ngModelChange)="loadProducts(1)" />
+  </div>
+
+  <!-- Products grid -->
   <div class="products-grid">
     <div class="product-card" *ngFor="let p of products">
       <img [src]="getProductImageUrl(p)"
@@ -18,24 +63,28 @@
       </div>
 
       <div class="card-actions">
-        <button class="btn-edit" (click)="editProduct(p.id)">✏ Uredi</button>
-        <button class="btn-delete" (click)="deleteProduct(p.id)">🗑 Obriši</button>
+        <button class="btn-edit" (click)="editProduct(p.id)">
+          {{ 'PRODUCT.BUTTON_EDIT' | translate }}
+        </button>
+        <button class="btn-delete" (click)="deleteProduct(p.id)">
+          {{ 'PRODUCT.BUTTON_DELETE' | translate }}
+        </button>
       </div>
     </div>
   </div>
 
-  <!-- Paginacija -->
+  <!-- Pagination -->
   <div class="pagination">
     <button [disabled]="currentPage === 1"
             (click)="loadProducts(currentPage - 1)">
-      ◀ Prethodna
+      {{ 'PRODUCT.PAG_PREVIOUS' | translate }}
     </button>
 
-    <span>Stranica {{ currentPage }} / {{ totalPages }}</span>
+    <span>{{ 'PRODUCT.PAGINATION' | translate }} {{ currentPage }} / {{ totalPages }}</span>
 
     <button [disabled]="currentPage === totalPages"
             (click)="loadProducts(currentPage + 1)">
-      Sljedeća ▶
+      {{ 'PRODUCT.PAG_NEXT' | translate }}
     </button>
   </div>
 </div>

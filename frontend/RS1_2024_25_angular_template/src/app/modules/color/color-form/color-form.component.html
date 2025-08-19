@@ -1,0 +1,29 @@
+<div class="form-container" *ngIf="!loading; else loadingTpl">
+  <form [formGroup]="form" (ngSubmit)="save()">
+    <div class="form-group">
+      <label for="name">{{ 'COLOR.NAME_LABEL' | translate }}</label>
+      <input id="name" formControlName="name" type="text" />
+      <div class="error" *ngIf="form.get('name')?.invalid && form.get('name')?.touched">
+        {{ 'COLOR.NAME_LABEL' | translate }} {{ 'COMMON.REQUIRED' | translate }}
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="hex_Code">{{ 'COLOR.HEX_LABEL' | translate }}</label>
+      <input id="hex_Code" formControlName="hex_Code" type="color" />
+      <span class="hex-display">{{ form.get('hex_Code')?.value }}</span>
+      <div class="error" *ngIf="form.get('hex_Code')?.invalid && form.get('hex_Code')?.touched">
+        {{ 'COLOR.HEX_LABEL' | translate }} {{ 'COMMON.INVALID' | translate }}
+      </div>
+    </div>
+
+    <div class="buttons">
+      <button type="submit" [disabled]="form.invalid">{{ 'COLOR.BUTTON_UPDATE' | translate }}</button>
+      <button type="button" class="cancel" (click)="cancel()">{{ 'COLOR.BUTTON_CANCEL' | translate }}</button>
+    </div>
+  </form>
+</div>
+
+<ng-template #loadingTpl>
+  <p>{{ 'COLOR.LOADING' | translate }}</p>
+</ng-template>

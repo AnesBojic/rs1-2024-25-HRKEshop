@@ -1,19 +1,19 @@
-import {Component} from '@angular/core';
-import {TranslateService} from '@ngx-translate/core';
+import { Component } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css',
-  standalone: false
+  standalone: false,
+  styleUrls: ['./app.component.css'] // ispravljeno u množinu
 })
 export class AppComponent {
-  languages = [
-    {code: 'bs', label: 'Bosanski'},
-    {code: 'en', label: 'English'}
-  ];
-
   title = 'HRKEShop';
+
+  languages = [
+    { code: 'bs', label: 'Bosanski' },
+    { code: 'en', label: 'English' }
+  ];
 
   constructor(private translate: TranslateService) {
     // Postavi default jezik
@@ -22,6 +22,6 @@ export class AppComponent {
   }
 
   changeLanguage(lang: string): void {
-    this.translate.use(lang); // Promjena jezika u hodu
+    this.translate.use(lang);
   }
 }

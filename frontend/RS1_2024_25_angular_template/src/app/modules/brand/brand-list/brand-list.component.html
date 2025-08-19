@@ -1,0 +1,18 @@
+<div class="brand-container">
+  <button class="add-btn" (click)="createBrand()">
+    {{ 'BRAND.BUTTON_ADD' | translate }}
+  </button>
+  <ul class="brand-list">
+    <li *ngFor="let brand of brands" class="brand-item">
+      <span>{{ brand.name }}</span>
+      <div class="actions">
+        <button class="edit-btn" (click)="editBrand(brand)">
+          {{ 'BRAND.BUTTON_EDIT' | translate }}
+        </button>
+        <button class="delete-btn" (click)="deleteBrand(brand)">
+          {{ 'BRAND.BUTTON_DELETE' | translate }}
+        </button>
+      </div>
+    </li>
+  </ul>
+</div>

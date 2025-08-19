@@ -1,105 +1,162 @@
+/* Container */
 .product-container {
   padding: 20px;
-  max-width: 1200px;
-  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
+/* Header */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+}
+
+.header h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: bold;
 }
 
 .btn-add {
-  background-color: #28a745;
+  background: #4caf50;
+  border: none;
   color: white;
   padding: 8px 14px;
-  border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
-}
-.btn-add:hover {
-  background-color: #218838;
+  font-size: 14px;
+  transition: background 0.2s ease-in-out;
 }
 
+.btn-add:hover {
+  background: #43a047;
+}
+
+/* Filters */
+.filters {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  background: #f9f9f9;
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.filters input,
+.filters select {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  min-width: 160px;
+}
+
+/* Products grid */
 .products-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 20px;
+  gap: 16px;
 }
 
 .product-card {
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  background: white;
+  border-radius: 10px;
   overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   display: flex;
   flex-direction: column;
+  transition: transform 0.2s ease-in-out;
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
 }
 
 .product-card img {
   width: 100%;
-  height: 150px;
+  height: 180px;
   object-fit: cover;
 }
 
 .card-body {
-  padding: 10px;
+  padding: 12px;
+  flex-grow: 1;
 }
 
-.price {
+.card-body h3 {
+  margin: 0 0 8px;
+  font-size: 16px;
+}
+
+.card-body .price {
   font-weight: bold;
-  color: #28a745;
+  color: #2196f3;
 }
 
 .card-actions {
-  padding: 10px;
   display: flex;
   justify-content: space-between;
+  padding: 10px 12px;
+  border-top: 1px solid #eee;
+}
+
+.card-actions button {
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background 0.2s;
 }
 
 .btn-edit {
-  background-color: #ffc107;
-  color: #000;
-  padding: 6px 10px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+  background: #ffc107;
+  color: black;
 }
+
 .btn-edit:hover {
-  background-color: #e0a800;
+  background: #e0a800;
 }
 
 .btn-delete {
-  background-color: #dc3545;
+  background: #e53935;
   color: white;
-  padding: 6px 10px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-.btn-delete:hover {
-  background-color: #c82333;
 }
 
+.btn-delete:hover {
+  background: #c62828;
+}
+
+/* Pagination */
 .pagination {
-  margin-top: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+  margin-top: 16px;
 }
 
 .pagination button {
-  background-color: #007bff;
-  color: white;
-  padding: 6px 10px;
   border: none;
-  border-radius: 4px;
+  background: #1976d2;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
   cursor: pointer;
+  transition: background 0.2s;
 }
+
 .pagination button:disabled {
-  background-color: #ccc;
+  background: #b0bec5;
   cursor: not-allowed;
+}
+
+.pagination button:hover:not(:disabled) {
+  background: #1565c0;
+}
+
+.pagination span {
+  font-weight: 500;
 }

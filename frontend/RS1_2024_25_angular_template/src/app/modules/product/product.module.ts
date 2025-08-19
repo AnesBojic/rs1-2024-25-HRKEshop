@@ -7,6 +7,7 @@ import { RouterModule } from '@angular/router';
 import { ProductRoutingModule } from './product-routing.module';
 import { ProductListComponent } from './product-list/product-list.component';
 import { ProductFormComponent } from './product-form/product-form.component';
+import {TranslateModule} from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { ProductFormComponent } from './product-form/product-form.component';
     ReactiveFormsModule,
     HttpClientModule,
     RouterModule,
-    ProductRoutingModule
+    ProductRoutingModule,
+    TranslateModule   // 👈 obavezno dodaj
   ]
 })
 export class ProductModule { }

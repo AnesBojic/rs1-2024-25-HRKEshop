@@ -1,0 +1,18 @@
+<div class="color-list-container">
+  <button class="btn-add" (click)="createColor()">
+    {{ 'COLOR.BUTTON_ADD' | translate }}
+  </button>
+  <ul>
+    <li *ngFor="let color of colors">
+      <div class="brand-name">{{ color.name }} ({{ color.hex_Code }})</div>
+      <div class="actions">
+        <button class="btn-edit" (click)="editColor(color)">
+          {{ 'COLOR.BUTTON_EDIT' | translate }}
+        </button>
+        <button class="btn-delete" (click)="deleteColor(color)">
+          {{ 'COLOR.BUTTON_DELETE' | translate }}
+        </button>
+      </div>
+    </li>
+  </ul>
+</div>

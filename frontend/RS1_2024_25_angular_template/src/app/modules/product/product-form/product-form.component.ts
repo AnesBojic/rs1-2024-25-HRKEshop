@@ -86,6 +86,16 @@ export class ProductFormComponent implements OnInit {
     });
   }
 
+  createNewColor() {
+    this.router.navigate(['/color'], { relativeTo: this.route });
+  }
+
+  createNewBrand() {
+    this.router.navigate(['/brand'], { relativeTo: this.route });
+  }
+
+
+
   submit(): void {
     if (this.form.invalid) return;
 
@@ -95,8 +105,10 @@ export class ProductFormComponent implements OnInit {
     };
 
     this.productsApi.updateOrInsert(request).subscribe(() => {
-      alert('Proizvod je uspješno sačuvan.');
+      alert('Product has been updated.');
       this.router.navigate(['/products']);
     });
   }
 }
+
+

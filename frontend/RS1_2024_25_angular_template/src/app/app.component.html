@@ -1,3 +1,12 @@
+<div class="language-switcher">
+  <mat-form-field appearance="fill">
+    <mat-label>{{ 'LANGUAGE' | translate }}</mat-label>
+    <mat-select (selectionChange)="changeLanguage($event.value)" [value]="'bs'">
+      <mat-option *ngFor="let lang of languages" [value]="lang.code">
+        {{ lang.label }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
 
-  <router-outlet></router-outlet>
-
+<router-outlet></router-outlet>

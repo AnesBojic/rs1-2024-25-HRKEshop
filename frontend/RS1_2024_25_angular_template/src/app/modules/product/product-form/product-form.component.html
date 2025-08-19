@@ -1,42 +1,50 @@
-<h2>{{ isEditMode ? 'Uredi proizvod' : 'Dodaj proizvod' }}</h2>
+<h2>{{ isEditMode ? ('PRODUCT.TITLE_EDIT' | translate) : ('PRODUCT.TITLE_CREATE' | translate) }}</h2>
 
 <form [formGroup]="form" (ngSubmit)="submit()">
-
   <div>
-    <label>Naziv:</label>
+    <label>{{ 'PRODUCT.NAME_LABEL' | translate }}</label>
     <input type="text" formControlName="name" />
   </div>
 
   <div>
-    <label>Cijena:</label>
+    <label>{{ 'PRODUCT.PRICE_LABEL' | translate }}</label>
     <input type="number" formControlName="price" />
   </div>
 
   <div>
-    <label>Spol:</label>
+    <label>{{ 'PRODUCT.GENDER_LABEL' | translate }}</label>
     <select formControlName="gender">
-      <option value="" disabled hidden>-- Odaberite spol --</option>
-      <option [value]="1">Muški</option>
-      <option [value]="2">Ženski</option>
-      <option [value]="3">Ostalo</option>
+      <option value="" disabled hidden>-- {{ 'COMMON.SELECT' | translate }} --</option>
+      <option [value]="1">{{ 'PRODUCT.MALE' | translate }}</option>
+      <option [value]="2">{{ 'PRODUCT.FEMALE' | translate }}</option>
+      <option [value]="3">{{ 'PRODUCT.OTHER' | translate }}</option>
     </select>
   </div>
 
   <div>
-    <label>Boja:</label>
+    <label>{{ 'PRODUCT.COLOR_LABEL' | translate }}</label>
     <select formControlName="colorId">
-      <option value="" disabled hidden>-- Odaberite boju --</option>
+      <option value="" disabled hidden>-- {{ 'COMMON.SELECT' | translate }} --</option>
       <option *ngFor="let color of colors" [value]="color.id">{{ color.name }}</option>
     </select>
   </div>
 
   <div>
-    <label>Brend:</label>
+    <label>{{ 'PRODUCT.BRAND_LABEL' | translate }}</label>
     <select formControlName="brandId">
-      <option value="" disabled hidden>-- Odaberite brend --</option>
+      <option value="" disabled hidden>-- {{ 'COMMON.SELECT' | translate }} --</option>
       <option *ngFor="let brand of brands" [value]="brand.id">{{ brand.name }}</option>
     </select>
   </div>
 
-  <button type="submit" [disabled]="form.invalid">Spremi</button>
+
+  <div class="form-buttons">
+    <button type="submit" [disabled]="form.invalid">{{ 'PRODUCT.BUTTON_SAVE' | translate }}</button>
+    <button type="button" class="color-button" (click)="createNewColor()">
+      {{ 'COLOR.BUTTON_ADD' | translate }}
+    </button>
+    <button type="button" class="brand-button" (click)="createNewBrand()">
+      {{ 'BRAND.BUTTON_ADD' | translate }}
+    </button>
+  </div>
 </form>

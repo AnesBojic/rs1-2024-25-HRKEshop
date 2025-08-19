@@ -1,16 +1,64 @@
 {
-  "APP": {
-    "TITLE": "Dobrodošli u našu aplikaciju",
-    "DESCRIPTION": "Ovo je primjer lokalizacije."
+  "COMMON": {
+    "SAVE": "Spremi",
+    "CANCEL": "Otkaži",
+    "EDIT": "Uredi",
+    "DELETE": "Obriši",
+    "SELECT": "Odaberite"
   },
-  "LOGIN": {
-    "TITLE": "Prijava",
-    "USERNAME_LABEL": "Korisničko ime:",
-    "USERNAME_PLACEHOLDER": "Unesite korisničko ime",
-    "PASSWORD_LABEL": "Šifra:",
-    "PASSWORD_PLACEHOLDER": "Unesite šifru",
-    "SAVE_LOGIN": "Sačuvaj prijavu",
-    "BUTTON": "Prijavi se"
+  "CONFIRM": {
+    "DELETE_PRODUCT": "Da li ste sigurni da želite obrisati ovaj proizvod?"
+  },
+  "BRAND": {
+    "TITLE_CREATE": "Kreiraj Brend",
+    "TITLE_EDIT": "Uredi Brend",
+    "NAME_LABEL": "Naziv",
+    "BUTTON_CREATE": "Kreiraj",
+    "BUTTON_UPDATE": "Ažuriraj",
+    "BUTTON_CANCEL": "Otkaži",
+    "BUTTON_ADD": "➕ Dodaj Brend",
+    "BUTTON_EDIT": "✏ Uredi",
+    "BUTTON_DELETE": "🗑 Obriši"
+  },
+  "COLOR": {
+    "TITLE_CREATE": "Kreiraj Boju",
+    "TITLE_EDIT": "Uredi Boju",
+    "NAME_LABEL": "Naziv boje",
+    "HEX_LABEL": "HEX kod",
+    "BUTTON_CREATE": "Kreiraj",
+    "BUTTON_UPDATE": "Ažuriraj",
+    "BUTTON_CANCEL": "Otkaži",
+    "BUTTON_ADD": "➕ Dodaj Boju",
+    "BUTTON_EDIT": "✏ Uredi",
+    "BUTTON_DELETE": "🗑 Obriši",
+    "LOADING": "Učitavanje boje..."
+  },
+  "PRODUCT": {
+    "TITLE_CREATE": "Dodaj Proizvod",
+    "TITLE_EDIT": "Uredi Proizvod",
+    "NAME_LABEL": "Naziv",
+    "PRICE_LABEL": "Cijena",
+    "GENDER_LABEL": "Spol",
+    "COLOR_LABEL": "Boja",
+    "BRAND_LABEL": "Brend",
+    "BUTTON_SAVE": "Spremi",
+    "BUTTON_ADD": "➕ Dodaj Proizvod",
+    "BUTTON_EDIT": "✏ Uredi",
+    "BUTTON_DELETE": "🗑 Obriši",
+    "PAGINATION": "Stranica ",
+    "PAG_PREVIOUS": "◀ Prethodna",
+    "PAG_NEXT": "Sljedeća ▶",
+    "FILTER_NAME": "Pretraži po nazivu",
+    "MALE": "Muški",
+    "FEMALE": "Ženski",
+    "OTHER": "Ostalo",
+    "FILTER_ALL_GENDERS": "Svi spolovi",
+    "FILTER_MALE": "Muški",
+    "FILTER_FEMALE": "Ženski",
+    "FILTER_OTHER": "Ostalo",
+    "FILTER_ALL_BRANDS": "Svi brendovi",
+    "FILTER_ALL_COLORS": "Sve boje",
+    "FILTER_MIN_PRICE": "Minimalna cijena",
+    "FILTER_MAX_PRICE": "Maksimalna cijena"
   }
 }
-

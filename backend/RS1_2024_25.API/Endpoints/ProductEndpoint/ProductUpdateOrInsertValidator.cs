@@ -10,7 +10,7 @@ public class ProductUpdateOrInsertValidator : AbstractValidator<ProductUpdateOrI
 
 
         RuleFor(x => x.Price)
-            .GreaterThanOrEqualTo(1);
+            .GreaterThanOrEqualTo(5).WithMessage("Product has to be more expensive than 5 BAM");
 
 
         RuleFor(x => x.Gender)

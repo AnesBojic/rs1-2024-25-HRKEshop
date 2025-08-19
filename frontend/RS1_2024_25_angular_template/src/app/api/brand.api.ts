@@ -10,6 +10,17 @@ export interface BrandGetAllResponse {
   tenantId?: number;
 }
 
+export interface BrandGetByIdResponse {
+  id: number;
+  name: string;
+  tenantId?: number;
+}
+
+export interface BrandUpdateOrInsertRequest {
+  id?: number;
+  name: string;
+}
+
 export interface BrandGetAllPagedRequest {
   name?: string;
   pageNumber: number;
@@ -40,27 +51,18 @@ export class BrandApi {
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<BrandGetAllResponse[]> {
-    return this.http.get<BrandGetAllResponse[]>(
-      `${this.baseUrl}/brands/all`,
-      httpOptionsHelper()
-    );
+    return this.http.get<BrandGetAllResponse[]>(`${this.baseUrl}/brands/all`, httpOptionsHelper());
   }
 
-  getAllPaged(request: BrandGetAllPagedRequest): Observable<MyPagedList<BrandGetAllPagedResponse>> {
-    let params = new HttpParams()
-      .set('pageNumber', request.pageNumber.toString())
-      .set('pageSize', request.pageSize.toString());
+  getById(id: number): Observable<BrandGetByIdResponse> {
+    return this.http.get<BrandGetByIdResponse>(`${this.baseUrl}/brands/${id}`, httpOptionsHelper());
+  }
 
-    if (request.name) {
-      params = params.set('name', request.name);
-    }
+  updateOrInsert(data: BrandUpdateOrInsertRequest): Observable<number> {
+    return this.http.post<number>(`${this.baseUrl}/brands/UpdateOrInsert`, data, httpOptionsHelper());
+  }
 
-    return this.http.get<MyPagedList<BrandGetAllPagedResponse>>(
-      `${this.baseUrl}/brands/filter`,
-      {
-        params,
-        ...httpOptionsHelper(),
-      }
-    );
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/brands/delete/${id}`, httpOptionsHelper());
   }
 }

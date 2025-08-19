@@ -1,15 +1,64 @@
 {
-  "APP": {
-    "TITLE": "Welcome to our app",
-    "DESCRIPTION": "This is an example of localization."
+  "COMMON": {
+    "SAVE": "Save",
+    "CANCEL": "Cancel",
+    "EDIT": "Edit",
+    "DELETE": "Delete",
+    "SELECT": "Select"
   },
-  "LOGIN": {
-    "TITLE": "Login",
-    "USERNAME_LABEL": "Username:",
-    "USERNAME_PLACEHOLDER": "Enter username",
-    "PASSWORD_LABEL": "Password:",
-    "PASSWORD_PLACEHOLDER": "Enter password",
-    "SAVE_LOGIN": "Save login",
-    "BUTTON": "Login"
+  "CONFIRM": {
+    "DELETE_PRODUCT": "Are you sure you want to delete this product?"
+  },
+  "BRAND": {
+    "TITLE_CREATE": "Create Brand",
+    "TITLE_EDIT": "Edit Brand",
+    "NAME_LABEL": "Name",
+    "BUTTON_CREATE": "Create",
+    "BUTTON_UPDATE": "Update",
+    "BUTTON_CANCEL": "Cancel",
+    "BUTTON_ADD": "➕ Add Brand",
+    "BUTTON_EDIT": "✏ Edit",
+    "BUTTON_DELETE": "🗑 Delete"
+  },
+  "COLOR": {
+    "TITLE_CREATE": "Create Color",
+    "TITLE_EDIT": "Edit Color",
+    "NAME_LABEL": "Color Name",
+    "HEX_LABEL": "HEX Code",
+    "BUTTON_CREATE": "Create",
+    "BUTTON_UPDATE": "Update",
+    "BUTTON_CANCEL": "Cancel",
+    "BUTTON_ADD": "➕ Add Color",
+    "BUTTON_EDIT": "✏ Edit",
+    "BUTTON_DELETE": "🗑 Delete",
+    "LOADING": "Loading color..."
+  },
+  "PRODUCT": {
+    "TITLE_CREATE": "Add Product",
+    "TITLE_EDIT": "Edit Product",
+    "NAME_LABEL": "Name",
+    "PRICE_LABEL": "Price",
+    "GENDER_LABEL": "Gender",
+    "COLOR_LABEL": "Color",
+    "BRAND_LABEL": "Brand",
+    "BUTTON_SAVE": "Save",
+    "BUTTON_ADD": "➕ Add Product",
+    "BUTTON_EDIT": "✏ Edit",
+    "BUTTON_DELETE": "🗑 Delete",
+    "PAGINATION": "Page ",
+    "PAG_PREVIOUS": "◀ Previous",
+    "PAG_NEXT": "Next ▶",
+    "MALE": "Male",
+    "FEMALE": "Female",
+    "OTHER": "Other",
+    "FILTER_NAME": "Search by name",
+    "FILTER_ALL_GENDERS": "All genders",
+    "FILTER_MALE": "Male",
+    "FILTER_FEMALE": "Female",
+    "FILTER_OTHER": "Other",
+    "FILTER_ALL_BRANDS": "All brands",
+    "FILTER_ALL_COLORS": "All colors",
+    "FILTER_MIN_PRICE": "Min price",
+    "FILTER_MAX_PRICE": "Max price"
   }
 }
