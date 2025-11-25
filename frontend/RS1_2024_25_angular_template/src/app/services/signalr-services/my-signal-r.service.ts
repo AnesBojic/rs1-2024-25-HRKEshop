@@ -53,4 +53,21 @@ export class MySignalRService {
       .then(() => console.log('Message sent successfully'))
       .catch((err) => console.error('Error while sending message:', err));
   }
+
+  //Methods for ChatBot
+  sendTyping(toUser: string) {
+    this.hubConnection
+      .invoke('UserTyping', toUser)
+      .catch(err => console.error('Error sending typing notification:', err));
+  }
+
+  onTyping(callback: (fromUser: string) => void) {
+    this.hubConnection.on('UserTyping', (fromUser: string) => {
+      callback(fromUser);
+    });
+
+    //Methods for ChatBot
+  }
+
+
 }

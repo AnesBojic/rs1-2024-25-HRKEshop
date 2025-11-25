@@ -1,23 +1,27 @@
-<div class="product-container">
+<div class="product-container" (scroll)="onDivScroll($event)">
 
-  <!-- Header -->
   <div class="header">
     <h2>{{ 'PRODUCT.TITLE_CREATE' | translate }}</h2>
-    <button class="btn-add" (click)="goToNewProduct()">
-      {{ 'PRODUCT.BUTTON_ADD' | translate }}
-    </button>
+
+    <div class="header-actions">
+      <button class="btn-add" (click)="goToNewProduct()">
+        {{ 'PRODUCT.BUTTON_ADD' | translate }}
+      </button>
+
+      <button class="btn-toggle-scroll" (click)="toggleScrollMode()">
+        <span class="icon">🔁</span>
+        {{ isInfiniteScroll ? 'Switch to Pagination' : 'Switch to Infinite Scroll' }}
+      </button>
+    </div>
   </div>
 
-  <!-- Filters -->
   <div class="filters">
 
-    <!-- Search -->
     <input type="text"
            placeholder="🔍 {{ 'PRODUCT.NAME_LABEL' | translate }}"
            [(ngModel)]="filters.q"
            (ngModelChange)="loadProducts(1)" />
 
-    <!-- Gender -->
     <select [(ngModel)]="filters.gender" (ngModelChange)="loadProducts(1)">
       <option [ngValue]="undefined">{{ 'PRODUCT.GENDER_LABEL' | translate }}</option>
       <option [ngValue]="1">{{ 'PRODUCT.MALE' | translate }}</option>
@@ -25,32 +29,27 @@
       <option [ngValue]="3">{{ 'PRODUCT.OTHER' | translate }}</option>
     </select>
 
-    <!-- Brand -->
     <select [(ngModel)]="filters.brandId" (ngModelChange)="loadProducts(1)">
       <option [ngValue]="undefined">{{ 'PRODUCT.BRAND_LABEL' | translate }}</option>
       <option *ngFor="let brand of brands" [ngValue]="brand.id">{{ brand.name }}</option>
     </select>
 
-    <!-- Color -->
     <select [(ngModel)]="filters.colorId" (ngModelChange)="loadProducts(1)">
       <option [ngValue]="undefined">{{ 'PRODUCT.COLOR_LABEL' | translate }}</option>
       <option *ngFor="let color of colors" [ngValue]="color.id">{{ color.name }}</option>
     </select>
 
-    <!-- Min price -->
     <input type="number"
            placeholder="{{ 'PRODUCT.PRICE_LABEL' | translate }} (min)"
            [(ngModel)]="filters.minPrice"
            (ngModelChange)="loadProducts(1)" />
 
-    <!-- Max price -->
     <input type="number"
            placeholder="{{ 'PRODUCT.PRICE_LABEL' | translate }} (max)"
            [(ngModel)]="filters.maxPrice"
            (ngModelChange)="loadProducts(1)" />
   </div>
 
-  <!-- Products grid -->
   <div class="products-grid">
     <div class="product-card" *ngFor="let p of products">
       <img [src]="getProductImageUrl(p)"
@@ -73,8 +72,7 @@
     </div>
   </div>
 
-  <!-- Pagination -->
-  <div class="pagination">
+  <div class="pagination" *ngIf="!isInfiniteScroll">
     <button [disabled]="currentPage === 1"
             (click)="loadProducts(currentPage - 1)">
       {{ 'PRODUCT.PAG_PREVIOUS' | translate }}
@@ -87,4 +85,17 @@
       {{ 'PRODUCT.PAG_NEXT' | translate }}
     </button>
   </div>
+
+  <div class="loading-spinner" *ngIf="isInfiniteScroll && isLoading" style="width: 100%; text-align: center; padding: 20px; clear: both;">
+    <p style="font-size: 1.2rem; color: #666;">⏳ Loading more products...</p>
+  </div>
+
+  <div class="end-list-msg" *ngIf="isInfiniteScroll && !isLoading && currentPage >= totalPages && products.length > 0" style="width: 100%; text-align: center; padding: 20px; clear: both;">
+    <p style="color: #888;">🏁 No more products to show.</p>
+  </div>
+
+  <div class="no-data" *ngIf="products.length === 0 && !isLoading" style="text-align: center; padding: 40px;">
+    <p>No products found matching your criteria.</p>
+  </div>
+
 </div>

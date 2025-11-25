@@ -1,0 +1,46 @@
+/* Language switcher */
+.language-switcher {
+  position: fixed;
+  top: 70px; /* adjust based on navbar height */
+  right: 20px;
+  z-index: 900; /* below chatbot and map button */
+  background-color: white;
+  padding: 5px 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+mat-form-field {
+  width: 130px;
+  margin: 0;
+}
+
+/* Chatbot floating button */
+app-chatbot {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+/* Leaflet Map floating button */
+.floating-maps-btn {
+  position: fixed;
+  bottom: 100px; /* above chatbot */
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  background-color: #2c7be5; /* blue */
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 26px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  z-index: 1001; /* above chatbot */
+  transition: 0.2s;
+}
+
+.floating-maps-btn:hover {
+  transform: scale(1.1);
+}

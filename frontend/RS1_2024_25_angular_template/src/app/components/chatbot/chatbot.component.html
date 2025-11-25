@@ -1,0 +1,33 @@
+<!-- Floating chat button -->
+<div class="chatbot-button" (click)="toggleChat()">
+  <img src="https://cdn-icons-png.flaticon.com/512/4712/4712109.png" alt="Chatbot" />
+</div>
+
+<!-- Chat window -->
+<div class="chatbot-container" [class.open]="isOpen">
+  <div class="chat-header">
+    <span>HRKE Assistant</span>
+    <button class="close-btn" (click)="toggleChat()">✖</button>
+  </div>
+
+  <div class="chat-messages">
+    <div *ngFor="let msg of messages" [ngClass]="msg.sender">
+      <div class="message-bubble">{{ msg.text }}</div>
+    </div>
+
+    <!-- Typing indicator -->
+    <div *ngIf="isBotTyping" class="typing-indicator">
+      HRKE Assistant piše<span class="dots">...</span>
+    </div>
+  </div>
+
+  <div class="chat-input">
+    <input
+      type="text"
+      [(ngModel)]="userMessage"
+      (keyup.enter)="sendMessage()"
+      placeholder="Type a message..."
+    />
+    <button (click)="sendMessage()">Send</button>
+  </div>
+</div>

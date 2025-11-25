@@ -71,4 +71,19 @@ public class MySignalrHub(IMyAuthService myAuthService) : Hub
         await Clients.Group($"user_{toUser}")
                      .SendAsync("myClientMethod1", message);
     }
+
+    // Metoda for sending typing indicator (ChatBot)
+    public async Task SendTyping(string toUser, string fromUser, bool isTyping)
+    {
+        var tokenString = GetMyAuthToken();
+        var authInfo = myAuthService.GetAuthInfoFromTokenString(tokenString);
+
+        if (!authInfo.IsLoggedIn)
+            throw new HubException("Unauthorized.");
+
+        // Pošalji typing event target korisniku
+        await Clients.Group($"user_{toUser}")
+                     .SendAsync("UserTyping", fromUser, isTyping);
+    }
+
 }

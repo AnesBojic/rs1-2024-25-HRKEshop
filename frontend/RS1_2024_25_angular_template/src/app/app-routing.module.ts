@@ -4,6 +4,8 @@ import { UnauthorizedComponent } from './modules/shared/unauthorized/unauthorize
 
 import { AuthGuard } from './auth-guards/auth-guard.service';
 import { AppShellComponent } from './modules/shared/app-shell/app-shell.component';
+import { LeafletMapComponent } from './components/leaflet-map/leaflet-map.component';
+
 
 const routes: Routes = [
   { path: 'unauthorized', component: UnauthorizedComponent },
@@ -35,6 +37,9 @@ const routes: Routes = [
         path: 'auth',
         loadChildren: () => import('./modules/auth/auth.module').then(m => m.AuthModule)
       },
+
+      { path: 'maps', component: LeafletMapComponent },
+
       { path: '', redirectTo: 'public', pathMatch: 'full' }
     ]
   },

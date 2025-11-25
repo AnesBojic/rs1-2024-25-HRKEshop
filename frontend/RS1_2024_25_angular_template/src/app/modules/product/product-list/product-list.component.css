@@ -1,16 +1,23 @@
-/* Container */
+/* --- CONTAINER (KLJUČNO ZA INFINITE SCROLL) --- */
 .product-container {
+  /* OVO MORAŠ IMATI da bi (scroll) event radio: */
+  height: 100vh;        /* Visina ekrana */
+  overflow-y: auto;     /* Sadržaj se skrola unutar ovog diva */
+  box-sizing: border-box; /* Da padding ne poremeti širinu */
+
+  /* Tvoj originalni stil */
   padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-/* Header */
+/* --- HEADER --- */
 .header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
 }
 
 .header h2 {
@@ -19,6 +26,14 @@
   font-weight: bold;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: 12px;
+}
+
+/* --- BUTTONS --- */
 .btn-add {
   background: #4caf50;
   border: none;
@@ -34,7 +49,38 @@
   background: #43a047;
 }
 
-/* Filters */
+.btn-toggle-scroll {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #1976d2, #42a5f5);
+  color: white;
+  border: none;
+  border-radius: 30px;
+  padding: 8px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+  transition: all 0.25s ease-in-out;
+}
+
+.btn-toggle-scroll:hover {
+  background: linear-gradient(135deg, #1565c0, #1e88e5);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 12px rgba(0,0,0,0.25);
+}
+
+.btn-toggle-scroll:active {
+  transform: scale(0.97);
+}
+
+.btn-toggle-scroll .icon {
+  font-size: 16px;
+}
+
+/* --- FILTERS --- */
 .filters {
   display: flex;
   gap: 12px;
@@ -53,7 +99,7 @@
   min-width: 160px;
 }
 
-/* Products grid */
+/* --- PRODUCTS GRID --- */
 .products-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -129,13 +175,14 @@
   background: #c62828;
 }
 
-/* Pagination */
+/* --- PAGINATION --- */
 .pagination {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 12px;
   margin-top: 16px;
+  padding-bottom: 20px; /* Malo prostora na dnu */
 }
 
 .pagination button {
@@ -159,4 +206,29 @@
 
 .pagination span {
   font-weight: 500;
+}
+
+/* --- LOADING SPINNER & MESSAGES --- */
+.loading-spinner {
+  text-align: center;
+  padding: 20px;
+  font-size: 16px;
+  color: #555;
+  width: 100%;
+  clear: both;
+}
+
+.end-list-msg {
+  text-align: center;
+  padding: 20px;
+  color: #888;
+  font-style: italic;
+  width: 100%;
+}
+
+.no-data {
+  text-align: center;
+  padding: 40px;
+  color: #777;
+  width: 100%;
 }
