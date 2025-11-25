@@ -4,6 +4,8 @@
 *.tmp
 *.asd
 *.wbk
+appsettings.json
+appsettings.*.json
 
 
 # Visual Studio
