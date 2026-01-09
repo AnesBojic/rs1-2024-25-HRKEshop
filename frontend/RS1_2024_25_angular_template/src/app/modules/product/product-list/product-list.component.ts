@@ -17,19 +17,19 @@ import { ColorApi, ColorGetAllResponse } from '../../../api/color.api';
 })
 export class ProductListComponent implements OnInit {
 
-  // --- VARIJABLE ---
+
   products: ProductGetAll3Response[] = [];
 
-  // Paginacija
+  // Pagination
   currentPage = 1;
   totalPages = 1;
   pageSize = 6;
 
-  // Statusi
+  // Status
   isInfiniteScroll = false;
   isLoading = false;
 
-  // Filteri
+  // Filters
   filters: Partial<ProductGetAll3Request> = {
     q: '',
     gender: undefined,
@@ -39,7 +39,7 @@ export class ProductListComponent implements OnInit {
     colorId: undefined
   };
 
-  // Podaci za dropdown menije
+
   brands: BrandGetAllResponse[] = [];
   colors: ColorGetAllResponse[] = [];
 
@@ -56,7 +56,7 @@ export class ProductListComponent implements OnInit {
     this.loadColors();
   }
 
-  // --- GLAVNA LOGIKA ---
+
 
   toggleScrollMode(): void {
     this.isInfiniteScroll = !this.isInfiniteScroll;
@@ -93,10 +93,10 @@ export class ProductListComponent implements OnInit {
     this.productsApi.filter(request).subscribe({
       next: (res: MyPagedList<ProductGetAll3Response>) => {
         if (this.isInfiniteScroll && page > 1) {
-          // APPEND (dodaj na kraj)
+
           this.products = [...this.products, ...res.dataItems];
         } else {
-          // REPLACE (zamijeni sve)
+
           this.products = res.dataItems;
         }
 
@@ -123,7 +123,7 @@ export class ProductListComponent implements OnInit {
     if (element.scrollHeight - element.scrollTop <= element.clientHeight + 50) {
 
       if (this.currentPage < this.totalPages) {
-        console.log("Učitavam novu stranicu (Div Scroll)...");
+        console.log("Loading new page (Div Scroll)...");
         this.loadProducts(this.currentPage + 1);
       }
     }

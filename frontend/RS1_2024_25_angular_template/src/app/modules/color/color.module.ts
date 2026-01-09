@@ -4,7 +4,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { ColorRoutingModule } from './color-routing.module';
 import { ColorListComponent } from './color-list/color-list.component';
 import { ColorFormComponent } from './color-form/color-form.component';
-import { TranslateModule } from '@ngx-translate/core'; // 👈 dodano
+import { TranslateModule } from '@ngx-translate/core'; //
 
 @NgModule({
   declarations: [
@@ -16,7 +16,7 @@ import { TranslateModule } from '@ngx-translate/core'; // 👈 dodano
     ReactiveFormsModule,
     FormsModule,
     ColorRoutingModule,
-    TranslateModule   // 👈 obavezno dodaj
+    TranslateModule   //
   ]
 })
 export class ColorModule { }

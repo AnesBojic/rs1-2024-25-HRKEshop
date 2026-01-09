@@ -4,8 +4,6 @@
 *.tmp
 *.asd
 *.wbk
-appsettings.json
-appsettings.*.json
 
 
 # Visual Studio
@@ -68,8 +66,3 @@ coverage/
 
 # Temporary local files
 *.log
-
-
-# Ignore configuration files
-appsettings.json
-appsettings.*.json

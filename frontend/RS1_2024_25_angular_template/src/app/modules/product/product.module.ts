@@ -21,7 +21,7 @@ import {TranslateModule} from '@ngx-translate/core';
     HttpClientModule,
     RouterModule,
     ProductRoutingModule,
-    TranslateModule   // 👈 obavezno dodaj
+    TranslateModule
   ]
 })
 export class ProductModule { }

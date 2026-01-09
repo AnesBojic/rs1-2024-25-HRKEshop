@@ -1,43 +1,143 @@
-🛍️ HRKEshop - E-Commerce Platform
+# 🛍️ HRKEshop - E-Commerce Platform
+
+### HRKEshop is a full-stack e-commerce platform developed as part of the **RS1 (Software Solutions Development 1)** course for the academic year **2024/25**.  
+The project demonstrates an online shopping system built with:
+
+- ⚙️ **.NET C#**
+- 🌐 **Angular (TypeScript)**
+- 🗄️ **Microsoft SQL Server**
+
+## Features:
+
+### 👤 User Authentication 
+
+ Secure login and registration system
+
+### 🏢Multitenancy suport 
+
+Multiple different companies can use the same application without interfiering with each other.
 
 
-📋 About The ProjectHRKEshop is a full-stack e-commerce platform developed as part of the RS1 (Development of Software
- Solutions 1) course for the academic year 2024-25. This project demonstrates the implementation of a modern online shopping system using .NET C#, Angular TypeScript, and Microsoft SQL Server.✨
- 
-🛒 Shopping Cart - Add, remove, and manage products(In development)
-👤 User Authentication - Secure login and registration system
-📦 Product Management - Browse, search, and filter products
-💳 Order Processing - Complete checkout and order management (In development)
-📊 Admin Dashboard - Manage products, orders, and users (In development)
-🔍 Search Functionality - Find products quickly and efficiently
+### 📦 Product Management 
 
+Browse, search, create, delete and moddify products
 
-🛠️ Built With
-Backend: .NET C# (ASP.NET Core)
-Frontend: Angular (TypeScript)
-Database: Microsoft SQL Server (MS SQL)
-ORM: Entity Framework Core
-Authentication: JWT / ASP.NET Identity
-🚀 Getting StartedPrerequisitesEnsure you have the following installed on your system:bashCopy code
-- Node.js (v16 or higher) and npm
-- Microsoft SQL Server
-- SQL Server Management Studio (SSMS)
-- Visual Studio 2022 or Visual Studio Code
+### 🔍 Search Functionality 
+
+ Find products quickly and efficiently
+
+### 🗺️Leaflet maps
+
+View and interact with map components inside the application.
+
+### 🤖AI Chatbot assistant
+
+Integrated chatbot for user support and product guidance.
+
+### 🌍Multilanguage options
+
+Switch between available languages in the UI.
 
 
 
+## ⚙️ Technologies & Requirements
 
- Setup:
- 1. Rebuild solution
- 2. update-database
- 3. Start backend and execute data-base generate seed endpoint
- 4. Use SQL Server managment studio to list all the users, take any with role_id = 1
- 5. Copy the email address from the results
- 
-Login credentials:
+### Before running the application, install the following:
 
-Email: [email from query result]
-Password: test
+#### 🧰[.NET SDK 8.0+](https://dotnet.microsoft.com/en-us/download)
+
+#### 🟩[Node.js 18+](https://nodejs.org/en) 
+
+#### 🅰️[Angular CLI](https://v17.angular.io/cli)
+
+#### 🗄️[SQL Server Managment studio & SQL Server](https://www.microsoft.com/en-us/sql-server)
+
+## 🔧 Backend – Running the API Server
+
+### 1. Setting up the database 
+
+1. Update the database
+```
+
+update-database
+
+```
+2. Running the seed endpoint:
+
+   It is required to run the seed endpoint provided bellow to give the database test records.
+
+   In case it shows unAuthorized error (IGNORE IT), it works fine it just show error because extra security checks for when application is fully running.
+
+```
+
+ POST -> /data-seed-base
+
+```
+
+3. Backend app port (allready setted up)
+
+```
+
+ http://localhost:7000 
+
+ ```
+
+## 💻 Frontend – Running the Angular Application
+
+### 1. Install Dependencies
+```
+cd frontend
+
+or
+
+npm install
+
+```
+
+### 2. Start the Application
+
+```
+
+npm start
+
+ or
+
+npm run dev
+
+```
+
+### 3. Frontend Base URL (already configured)
+
+```
+
+"http://localhost:4200"
+
+```
+
+### 🔐 Test login credentials
+
+| Email               | Password |
+| --------------------| -------- |
+| any email in SSMS   | test     |
+| ____________________| ________ |
 
 
 
+Using the SQL Server Managment studio it will be required to take from the __*database*__ **HRKEshop** -> __*table*__ **AppUsers**.
+
+Any email, and all of their passwords are "test".
+
+In order to test the full scope of the application take user whose role_id = 1( Admin ), in that way it is possible to test all the functionalities of the application.
+
+After loging in to test the application it is currently required to go to the following route, http://localhost:4200/products
+
+
+## 📄 Autors:
+
+### ✍️ Created by:
+ * Anes Bojić
+ * Džan Topalbegović
+
+#### 🎓 Study Program: Razvoj softvera – 3rd year
+
+#### 📘 Subject: Razvoj softvera 1 (RS1)

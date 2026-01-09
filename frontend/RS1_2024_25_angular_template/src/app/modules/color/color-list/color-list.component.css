@@ -1,4 +1,4 @@
-/* Color List Container */
+
 .color-list-container {
   max-width: 600px;
   margin: 20px auto;
@@ -33,13 +33,13 @@
 }
 
 .color-list-container li .brand-name {
-  /* Ime boje zauzima lijevu stranu */
+
   flex-grow: 1;
 }
 
 .color-list-container li .actions {
   display: flex;
-  gap: 4px; /* mali razmak između dugmadi */
+  gap: 4px;
 }
 
 .color-list-container li .actions button {

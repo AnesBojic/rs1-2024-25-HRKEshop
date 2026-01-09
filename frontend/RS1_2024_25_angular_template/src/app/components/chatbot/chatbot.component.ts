@@ -25,11 +25,11 @@ export class ChatbotComponent {
     const message = this.userMessage.trim();
     if (!message) return;
 
-    // Dodaj korisničku poruku odmah
+    // Add usser message
     this.messages.push({ sender: 'user', text: message });
     this.userMessage = '';
 
-    // Aktiviraj typing indikator
+
     this.isBotTyping = true;
 
     this.http.post<{ response: string }>(this.apiUrl, { message })
@@ -42,16 +42,16 @@ export class ChatbotComponent {
           this.isBotTyping = false;
           console.error('Chatbot error:', err);
 
-          let errorMessage = '⚠️ Došlo je do greške.';
+          let errorMessage = '⚠️ An error occurred.';
 
           if (err.status === 429) {
-            errorMessage = '⚠️ Chatbot je preopterećen. Molimo sačekajte nekoliko sekundi prije novog pokušaja.';
+            errorMessage = '⚠️ Chatbot is overloaded, please try again. .';
           }
           else if (err.status === 503) {
-            errorMessage = '⚠️ Chatbot trenutno nije dostupan. Molimo pokušajte kasnije.';
+            errorMessage = '⚠️ Chatbot is currently unavailable, try again later.';
           }
           else if (err.status === 0) {
-            errorMessage = '⚠️ Ne mogu se povezati sa serverom.';
+            errorMessage = '⚠️ Unable to connect to the server.';
           }
 
           this.messages.push({

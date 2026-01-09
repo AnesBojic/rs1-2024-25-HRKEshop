@@ -23,11 +23,11 @@ app-chatbot {
   z-index: 1000;
 }
 
-/* Leaflet Map floating button */
+/* Leaflet Map floating button — now placed to the LEFT of chatbot */
 .floating-maps-btn {
   position: fixed;
-  bottom: 100px; /* above chatbot */
-  right: 20px;
+  bottom: 20px; /* same height as chatbot */
+  right: 90px; /* moves maps button to the left of chatbot */
   width: 60px;
   height: 60px;
   background-color: #2c7be5; /* blue */
@@ -37,7 +37,7 @@ app-chatbot {
   font-size: 26px;
   cursor: pointer;
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  z-index: 1001; /* above chatbot */
+  z-index: 1001;
   transition: 0.2s;
 }
 

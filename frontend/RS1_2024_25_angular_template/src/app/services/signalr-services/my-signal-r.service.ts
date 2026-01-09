@@ -38,7 +38,7 @@ export class MySignalRService {
     }
   }
 
-  // Dodavanje listenera za primanje poruka
+  // Adding listenera for reciving messages
   myClientMethod1(callback: (message: string) => void) {
     this.hubConnection.on('myClientMethod1', (data: string) => {
       console.log('Message received:', data);
@@ -46,7 +46,7 @@ export class MySignalRService {
     });
   }
 
-  // Slanje poruke serveru
+  // Sending messagess to server
   myServerHubMethod1(toUser: string, message: string) {
     this.hubConnection
       .invoke('MyServerHubMethod1', toUser, message)

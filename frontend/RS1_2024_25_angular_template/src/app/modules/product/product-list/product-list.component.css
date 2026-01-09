@@ -1,11 +1,10 @@
-/* --- CONTAINER (KLJUČNO ZA INFINITE SCROLL) --- */
 .product-container {
-  /* OVO MORAŠ IMATI da bi (scroll) event radio: */
-  height: 100vh;        /* Visina ekrana */
-  overflow-y: auto;     /* Sadržaj se skrola unutar ovog diva */
-  box-sizing: border-box; /* Da padding ne poremeti širinu */
 
-  /* Tvoj originalni stil */
+  height: 100vh;        /* Size of screen */
+  overflow-y: auto;     /* The content is scrolled under this div */
+  box-sizing: border-box; /* This way padding wont disturbe width  */
+
+  /* Original style */
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -182,7 +181,7 @@
   align-items: center;
   gap: 12px;
   margin-top: 16px;
-  padding-bottom: 20px; /* Malo prostora na dnu */
+  padding-bottom: 20px;
 }
 
 .pagination button {

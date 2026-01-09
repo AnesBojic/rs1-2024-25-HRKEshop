@@ -16,7 +16,7 @@ import { TranslateModule } from '@ngx-translate/core';
     FormsModule,
     ReactiveFormsModule,
     BrandRoutingModule,
-    TranslateModule // ⚡ OVO JE KLJUČ
+    TranslateModule //
   ]
 })
 export class BrandModule {}
