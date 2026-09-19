@@ -1,0 +1,71 @@
+<div class="cart-page">
+  <div class="cart-header">
+    <h1>{{ 'CART.TITLE' | translate }}</h1>
+    <button type="button" class="btn-clear" *ngIf="items.length" (click)="clearCart()">
+      {{ 'CART.CLEAR' | translate }}
+    </button>
+  </div>
+
+  <p class="status" *ngIf="isLoading">{{ 'CART.LOADING' | translate }}</p>
+  <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+  <p class="success" *ngIf="successMessage">{{ successMessage }}</p>
+
+  <div class="empty" *ngIf="!isLoading && items.length === 0">
+    <p>{{ 'CART.EMPTY' | translate }}</p>
+    <a routerLink="/products">{{ 'CART.CONTINUE_SHOPPING' | translate }}</a>
+  </div>
+
+  <div class="cart-layout" *ngIf="!isLoading && items.length > 0">
+    <div class="cart-items">
+      <div class="cart-item" *ngFor="let item of items">
+        <img [src]="getImageUrl(item)" [alt]="item.productName" />
+        <div class="item-info">
+          <h3>{{ item.productName }}</h3>
+          <p>{{ 'CART.SIZE' | translate }}: {{ item.sizeName }}</p>
+          <p class="price">{{ item.unitPrice | currency:'BAM':'symbol' }}</p>
+          <p class="stock" *ngIf="item.stock < item.quantity">
+            {{ 'CART.LOW_STOCK' | translate }} ({{ item.stock }})
+          </p>
+        </div>
+        <div class="item-actions">
+          <label>
+            {{ 'CART.QTY' | translate }}
+            <input
+              type="number"
+              min="1"
+              [max]="item.stock"
+              [ngModel]="item.quantity"
+              (ngModelChange)="updateQuantity(item, $event)" />
+          </label>
+          <p class="line-total">{{ item.lineTotal | currency:'BAM':'symbol' }}</p>
+          <button type="button" class="btn-remove" (click)="removeItem(item)">
+            {{ 'CART.REMOVE' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <aside class="checkout-panel">
+      <h2>{{ 'CART.SUMMARY' | translate }}</h2>
+      <p>{{ 'CART.ITEMS' | translate }}: {{ totalQuantity }}</p>
+      <p class="total">{{ 'CART.TOTAL' | translate }}: {{ totalAmount | currency:'BAM':'symbol' }}</p>
+
+      <label class="address-label">
+        {{ 'CART.SHIPPING_ADDRESS' | translate }}
+        <textarea
+          rows="3"
+          [(ngModel)]="shippingAddress"
+          [placeholder]="'CART.SHIPPING_PLACEHOLDER' | translate"></textarea>
+      </label>
+
+      <button
+        type="button"
+        class="btn-checkout"
+        [disabled]="isCheckingOut"
+        (click)="checkout()">
+        {{ isCheckingOut ? ('CART.PLACING_ORDER' | translate) : ('CART.CHECKOUT' | translate) }}
+      </button>
+      <p class="hint" *ngIf="!isLoggedIn">{{ 'CART.LOGIN_HINT' | translate }}</p>
+    </aside>
+  </div>
+</div>

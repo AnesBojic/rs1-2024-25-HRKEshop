@@ -60,5 +60,26 @@
     "FILTER_ALL_COLORS": "All colors",
     "FILTER_MIN_PRICE": "Min price",
     "FILTER_MAX_PRICE": "Max price"
+  },
+  "CART": {
+    "TITLE": "Shopping cart",
+    "CLEAR": "Clear cart",
+    "LOADING": "Loading cart...",
+    "EMPTY": "Your cart is empty.",
+    "CONTINUE_SHOPPING": "Continue shopping",
+    "SIZE": "Size",
+    "QTY": "Qty",
+    "REMOVE": "Remove",
+    "SUMMARY": "Order summary",
+    "ITEMS": "Items",
+    "TOTAL": "Total",
+    "SHIPPING_ADDRESS": "Shipping address",
+    "SHIPPING_PLACEHOLDER": "Street, city, postal code",
+    "CHECKOUT": "Checkout",
+    "PLACING_ORDER": "Placing order...",
+    "LOGIN_HINT": "Log in as a customer to complete checkout. Guest items are kept in this browser until you sign in.",
+    "ADD": "Add to cart",
+    "LOADING_SIZES": "Loading sizes...",
+    "LOW_STOCK": "Only this many left in stock"
   }
 }

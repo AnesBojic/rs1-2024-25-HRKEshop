@@ -142,7 +142,9 @@
 
 .card-actions {
   display: flex;
-  justify-content: space-between;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 8px;
   padding: 10px 12px;
   border-top: 1px solid #eee;
 }
@@ -172,6 +174,43 @@
 
 .btn-delete:hover {
   background: #c62828;
+}
+
+.btn-cart {
+  background: #2e7d32;
+  color: white;
+}
+
+.btn-cart:hover {
+  background: #1b5e20;
+}
+
+.cart-feedback {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 6px;
+  background: #e8f5e9;
+  color: #1b5e20;
+}
+
+.size-label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 8px;
+  font-size: 13px;
+}
+
+.size-label select {
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.size-loading {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: #777;
 }
 
 /* --- PAGINATION --- */

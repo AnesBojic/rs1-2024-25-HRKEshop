@@ -65,6 +65,21 @@ a[mat-button]:hover
   font-weight: 600;
 }
 
+.cart-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  margin-left: 6px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: #c62828;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+}
+
 .mobile-menu-button {
   display: none;
 }

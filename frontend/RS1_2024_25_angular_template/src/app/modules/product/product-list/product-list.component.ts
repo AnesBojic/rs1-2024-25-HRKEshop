@@ -8,6 +8,10 @@ import {
 } from '../../../dto/product.dto';
 import { BrandApi, BrandGetAllResponse } from '../../../api/brand.api';
 import { ColorApi, ColorGetAllResponse } from '../../../api/color.api';
+import { CartApi } from '../../../api/cart.api';
+import { CartService } from '../../../services/cart.service';
+import { AuthService } from '../../../services/auth-services/auth.service';
+import { ProductSizeOption } from '../../../dto/cart.dto';
 
 @Component({
   selector: 'app-product-list',
@@ -17,19 +21,15 @@ import { ColorApi, ColorGetAllResponse } from '../../../api/color.api';
 })
 export class ProductListComponent implements OnInit {
 
-
   products: ProductGetAll3Response[] = [];
 
-  // Pagination
   currentPage = 1;
   totalPages = 1;
   pageSize = 6;
 
-  // Status
   isInfiniteScroll = false;
   isLoading = false;
 
-  // Filters
   filters: Partial<ProductGetAll3Request> = {
     q: '',
     gender: undefined,
@@ -39,39 +39,38 @@ export class ProductListComponent implements OnInit {
     colorId: undefined
   };
 
-
   brands: BrandGetAllResponse[] = [];
   colors: ColorGetAllResponse[] = [];
+
+  sizesByProduct: Record<number, ProductSizeOption[]> = {};
+  selectedSizeByProduct: Record<number, number | null> = {};
+  loadingSizes: Record<number, boolean> = {};
+  cartMessage = '';
+  canManageProducts = false;
 
   constructor(
     private productsApi: ProductsApi,
     private brandsApi: BrandApi,
     private colorsApi: ColorApi,
+    private cartApi: CartApi,
+    private cartService: CartService,
+    private authService: AuthService,
     public router: Router
   ) {}
 
   ngOnInit(): void {
+    this.canManageProducts = this.authService.isAdmin() || this.authService.isManager();
     this.loadProducts(this.currentPage);
     this.loadBrands();
     this.loadColors();
   }
 
-
-
   toggleScrollMode(): void {
     this.isInfiniteScroll = !this.isInfiniteScroll;
-
-    // Reset svega
     this.products = [];
     this.currentPage = 1;
     this.totalPages = 1;
-
-    if (this.isInfiniteScroll) {
-      this.pageSize = 15; // Bigger number for infinite scroll
-    } else {
-      this.pageSize = 6;  // Smaller number for paging
-    }
-
+    this.pageSize = this.isInfiniteScroll ? 15 : 6;
     this.loadProducts(1);
   }
 
@@ -93,10 +92,8 @@ export class ProductListComponent implements OnInit {
     this.productsApi.filter(request).subscribe({
       next: (res: MyPagedList<ProductGetAll3Response>) => {
         if (this.isInfiniteScroll && page > 1) {
-
           this.products = [...this.products, ...res.dataItems];
         } else {
-
           this.products = res.dataItems;
         }
 
@@ -111,38 +108,24 @@ export class ProductListComponent implements OnInit {
     });
   }
 
-
-
-
   onDivScroll(event: any) {
-
     if (!this.isInfiniteScroll || this.isLoading) return;
-
     const element = event.target;
-
     if (element.scrollHeight - element.scrollTop <= element.clientHeight + 50) {
-
       if (this.currentPage < this.totalPages) {
-        console.log("Loading new page (Div Scroll)...");
         this.loadProducts(this.currentPage + 1);
       }
     }
   }
 
-
   @HostListener('window:scroll', [])
   onWindowScroll() {
     if (!this.isInfiniteScroll || this.isLoading) return;
-
-
     const distanceFromBottom = document.documentElement.scrollHeight - (window.innerHeight + window.scrollY);
-
     if (distanceFromBottom <= 200 && this.currentPage < this.totalPages) {
       this.loadProducts(this.currentPage + 1);
     }
   }
-
-
 
   loadBrands(): void {
     this.brandsApi.getAll().subscribe((res: BrandGetAllResponse[]) => {
@@ -154,6 +137,88 @@ export class ProductListComponent implements OnInit {
     this.colorsApi.getAll().subscribe((res: ColorGetAllResponse[]) => {
       this.colors = res;
     });
+  }
+
+  ensureSizesLoaded(productId: number): void {
+    if (this.sizesByProduct[productId] || this.loadingSizes[productId]) {
+      return;
+    }
+
+    this.loadingSizes[productId] = true;
+    this.cartApi.getProductSizes(productId).subscribe({
+      next: (sizes) => {
+        this.sizesByProduct[productId] = sizes;
+        const firstAvailable = sizes.find((s) => s.stock > 0) ?? sizes[0];
+        this.selectedSizeByProduct[productId] = firstAvailable?.productSizeId ?? null;
+        this.loadingSizes[productId] = false;
+      },
+      error: () => {
+        this.sizesByProduct[productId] = [];
+        this.loadingSizes[productId] = false;
+      }
+    });
+  }
+
+  addToCart(product: ProductGetAll3Response): void {
+    this.cartMessage = '';
+    this.ensureSizesLoaded(product.id);
+
+    const sizes = this.sizesByProduct[product.id];
+    if (!sizes) {
+      this.cartApi.getProductSizes(product.id).subscribe({
+        next: (loaded) => {
+          this.sizesByProduct[product.id] = loaded;
+          const firstAvailable = loaded.find((s) => s.stock > 0) ?? loaded[0];
+          this.selectedSizeByProduct[product.id] = firstAvailable?.productSizeId ?? null;
+          this.addSelectedSizeToCart(product);
+        },
+        error: () => {
+          this.cartMessage = 'No sizes available for this product.';
+        }
+      });
+      return;
+    }
+
+    this.addSelectedSizeToCart(product);
+  }
+
+  private addSelectedSizeToCart(product: ProductGetAll3Response): void {
+    const selectedId = this.selectedSizeByProduct[product.id];
+    const size = this.sizesByProduct[product.id]?.find((s) => s.productSizeId === selectedId);
+
+    if (!size) {
+      this.cartMessage = 'Select a size first.';
+      return;
+    }
+
+    if (size.stock <= 0) {
+      this.cartMessage = 'Selected size is out of stock.';
+      return;
+    }
+
+    try {
+      this.cartService.addItem({
+        productId: product.id,
+        productSizeId: size.productSizeId,
+        productName: product.name,
+        sizeName: size.sizeName,
+        quantity: 1,
+        unitPrice: Number(size.priceForItem),
+        stock: size.stock,
+        imageUrl: null
+      }).subscribe({
+        next: () => {
+          this.cartMessage = `${product.name} (${size.sizeName}) added to cart.`;
+        },
+        error: (err) => {
+          this.cartMessage = typeof err?.error === 'string'
+            ? err.error
+            : (err?.message || 'Could not add to cart.');
+        }
+      });
+    } catch (err: any) {
+      this.cartMessage = err?.message || 'Could not add to cart.';
+    }
   }
 
   getProductImageUrl(product: any): string {
