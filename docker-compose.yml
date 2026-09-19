@@ -1,0 +1,75 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: hrkeshop-sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "Your_strong_Password123"
+    ports:
+      - "1433:1433"
+    volumes:
+      - hrkeshop-sql-data:/var/opt/mssql
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P \"Your_strong_Password123\" -Q \"SELECT 1\" || exit 1"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 40s
+
+  api:
+    build:
+      context: ./backend/RS1_2024_25.API
+      dockerfile: Dockerfile
+    container_name: hrkeshop-api
+    environment:
+      ASPNETCORE_ENVIRONMENT: Docker
+      ASPNETCORE_URLS: http://+:7000
+      ConnectionStrings__db1: "Server=sqlserver,1433;Database=HRKEshop;User Id=sa;Password=Your_strong_Password123;TrustServerCertificate=True;Encrypt=False"
+      Jwt__Key: "HRKEShop_Docker_Jwt_Signing_Key_Change_Me!"
+      Jwt__Issuer: HRKEShop
+      Jwt__Audience: HRKEShopUsers
+      FrontendBaseUrl: http://localhost:4200
+      ApplyMigrations: "true"
+      OpenAI__ApiKey: "${OPENAI_API_KEY:-}"
+    ports:
+      - "7000:7000"
+    volumes:
+      - hrkeshop-uploads:/app/wwwroot/images
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+
+  seed:
+    image: curlimages/curl:8.12.1
+    container_name: hrkeshop-seed
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: "no"
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        echo "Seeding base data..."
+        curl -fsS -X POST http://api:7000/data-seed-base
+        echo
+        echo "Seed complete."
+
+  frontend:
+    build:
+      context: ./frontend/RS1_2024_25_angular_template
+      dockerfile: Dockerfile
+    container_name: hrkeshop-frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  hrkeshop-sql-data:
+  hrkeshop-uploads:

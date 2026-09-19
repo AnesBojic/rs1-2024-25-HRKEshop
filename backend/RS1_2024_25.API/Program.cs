@@ -129,6 +129,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 var app = builder.Build();
 
 EnsureWebRoot(app);
+ApplyStartupDatabaseActions(app);
 
 // =====================
 // MIDDLEWARE PIPELINE
@@ -167,4 +168,19 @@ static void EnsureWebRoot(WebApplication app)
     Directory.CreateDirectory(Path.Combine(app.Environment.WebRootPath, "images", "users"));
     Directory.CreateDirectory(Path.Combine(app.Environment.WebRootPath, "images", "products"));
     Directory.CreateDirectory(Path.Combine(app.Environment.WebRootPath, "images", "roles"));
+}
+
+static void ApplyStartupDatabaseActions(WebApplication app)
+{
+    var applyMigrations = app.Configuration.GetValue("ApplyMigrations", false)
+        || string.Equals(app.Environment.EnvironmentName, "Docker", StringComparison.OrdinalIgnoreCase);
+
+    if (!applyMigrations)
+    {
+        return;
+    }
+
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    db.Database.Migrate();
 }

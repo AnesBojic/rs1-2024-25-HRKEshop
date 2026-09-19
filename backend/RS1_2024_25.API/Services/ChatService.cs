@@ -14,7 +14,7 @@ namespace RS1_2024_25.API.Services
 {
     public class ChatService
     {
-        private readonly ChatClient _chatClient;
+        private readonly ChatClient? _chatClient;
         private readonly ILogger<ChatService> _logger;
         private readonly ApplicationDbContext _db;
 
@@ -29,7 +29,9 @@ namespace RS1_2024_25.API.Services
 
             if (string.IsNullOrEmpty(apiKey))
             {
-                throw new Exception("Missing OpenAI API key in configuration.");
+                _logger.LogWarning("OpenAI API key is not configured. Chatbot AI replies are disabled.");
+                _chatClient = null;
+                return;
             }
 
             var openAIClient = new OpenAIClient(apiKey);
@@ -79,6 +81,11 @@ namespace RS1_2024_25.API.Services
 
                 if (dbCheck != null)
                     return dbCheck;
+
+                if (_chatClient == null)
+                {
+                    return "⚠️ Chatbot AI is not configured. Set OpenAI:ApiKey to enable AI replies.";
+                }
 
                 // 2) If not found — send to OpenAI model
                 var messages = new List<ChatMessage>

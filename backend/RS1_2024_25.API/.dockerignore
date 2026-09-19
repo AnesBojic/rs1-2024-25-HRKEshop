@@ -1,0 +1,9 @@
+**/.git
+**/bin
+**/obj
+**/.vs
+**/.idea
+**/*.user
+**/*.md
+**/wwwroot/images/**/*.*
+!**/wwwroot/images/**/.gitkeep

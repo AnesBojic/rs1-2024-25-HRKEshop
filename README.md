@@ -40,6 +40,46 @@ Switch between available languages in the UI.
 
 
 
+## 🐳 Run with Docker (recommended for local testing)
+
+Starts SQL Server, the .NET API (`:7000`), and the Angular frontend (`:4200`) together.
+
+### Requirements
+
+- [Docker](https://docs.docker.com/get-docker/) and Docker Compose
+
+### Start everything
+
+```bash
+docker compose up --build
+```
+
+Then open:
+
+- Frontend: http://localhost:4200
+- API Swagger: http://localhost:7000/swagger
+- Products page: http://localhost:4200/products
+
+On first start the API applies EF migrations and a one-shot `seed` service calls `POST /data-seed-base`.
+
+Optional chatbot AI key:
+
+```bash
+OPENAI_API_KEY=sk-... docker compose up --build
+```
+
+Stop and remove containers (keeps the SQL volume):
+
+```bash
+docker compose down
+```
+
+Reset the database volume:
+
+```bash
+docker compose down -v
+```
+
 ## ⚙️ Technologies & Requirements
 
 ### Before running the application, install the following:
