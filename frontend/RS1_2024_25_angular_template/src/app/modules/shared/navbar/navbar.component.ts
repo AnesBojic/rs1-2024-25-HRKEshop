@@ -5,6 +5,7 @@ import {ImageGetByEntityRequest} from '../../../dto/image.dto';
 import {NAV_LINKS, NavLink, ProfileAction} from '../../../helper/NavLink';
 import {ImageApi} from '../../../api/image.api';
 import {resolveApiAssetUrl} from '../../../helper/resolve-api-asset-url';
+import {CartService} from '../../../services/cart.service';
 
 @Component({
   selector: 'app-navbar',
@@ -20,13 +21,23 @@ export class NavbarComponent implements  OnInit{
   isAdmin = false;
   isManager = false;
   name:string = '';
+  cartCount = 0;
 
   profileActions:ProfileAction[] = [];
 
-  constructor(private authService:AuthService,private  router:Router,private imageApiservice:ImageApi) {
+  constructor(
+    private authService:AuthService,
+    private  router:Router,
+    private imageApiservice:ImageApi,
+    private cartService: CartService
+  ) {
   }
 
   ngOnInit(): void {
+
+          this.cartService.totalQuantity$.subscribe((count) => {
+            this.cartCount = count;
+          });
 
           this.authService.loggedIn$.subscribe(status=>
           {

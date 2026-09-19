@@ -3,7 +3,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AuthApi} from '../../../api/auth.api';
 import {LoginRequestDto} from '../../../dto/auth.dto';
 import {AuthService} from '../../../services/auth-services/auth.service';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 
 
 @Component({
@@ -17,11 +17,20 @@ export class LoginComponent implements  OnInit{
   form!:FormGroup;
   hidePassword=true;
   errorHandler:string | null = null;
+  private returnUrl = '/public';
 
-  constructor(private fb: FormBuilder,private authApi:AuthApi,private authService:AuthService,private router:Router) {
+  constructor(
+    private fb: FormBuilder,
+    private authApi:AuthApi,
+    private authService:AuthService,
+    private router:Router,
+    private route: ActivatedRoute
+  ) {
   }
 
   ngOnInit() :void {
+
+    this.returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/public';
 
     this.form = this.fb.group({
       email:['',[Validators.required,Validators.email]],
@@ -41,17 +50,12 @@ export class LoginComponent implements  OnInit{
 
     const loginRequest:LoginRequestDto = {email,password};
 
-
-
-
-
-
     this.authApi.login(loginRequest).subscribe({
       next:response=>{
 
         console.log('Login succesfull',response);
         this.authService.setTokens(response.token,response.refreshToken);
-        this.router.navigate(['/public']);
+        this.router.navigateByUrl(this.returnUrl);
 
       },
       error:err => {

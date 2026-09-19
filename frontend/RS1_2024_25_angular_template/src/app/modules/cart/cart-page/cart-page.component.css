@@ -1,0 +1,155 @@
+.cart-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 16px 40px;
+}
+
+.cart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.cart-header h1 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+.cart-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 24px;
+}
+
+.cart-item {
+  display: grid;
+  grid-template-columns: 120px 1fr auto;
+  gap: 16px;
+  padding: 16px;
+  margin-bottom: 12px;
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+}
+
+.cart-item img {
+  width: 120px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.item-info h3 {
+  margin: 0 0 6px;
+}
+
+.item-info p,
+.item-actions p {
+  margin: 4px 0;
+}
+
+.price,
+.line-total,
+.total {
+  font-weight: 700;
+  color: #1b6ca8;
+}
+
+.stock,
+.error {
+  color: #c62828;
+}
+
+.success {
+  color: #2e7d32;
+}
+
+.item-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.item-actions input {
+  width: 72px;
+  margin-left: 8px;
+  padding: 6px;
+}
+
+.checkout-panel {
+  background: #f7f7f7;
+  border-radius: 8px;
+  padding: 16px;
+  height: fit-content;
+}
+
+.address-label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 16px 0;
+  font-weight: 600;
+}
+
+.address-label textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  resize: vertical;
+  font: inherit;
+}
+
+.btn-checkout,
+.btn-clear,
+.btn-remove {
+  border: none;
+  border-radius: 6px;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-checkout {
+  width: 100%;
+  background: #2e7d32;
+  color: #fff;
+}
+
+.btn-checkout:disabled {
+  background: #9e9e9e;
+  cursor: not-allowed;
+}
+
+.btn-clear {
+  background: #eee;
+}
+
+.btn-remove {
+  background: #e53935;
+  color: #fff;
+}
+
+.hint,
+.empty {
+  color: #666;
+}
+
+.empty a {
+  color: #1b6ca8;
+  font-weight: 600;
+}
+
+@media (max-width: 800px) {
+  .cart-layout,
+  .cart-item {
+    grid-template-columns: 1fr;
+  }
+
+  .item-actions {
+    align-items: flex-start;
+  }
+}

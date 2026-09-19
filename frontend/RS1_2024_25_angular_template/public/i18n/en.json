@@ -63,5 +63,26 @@
     "IMAGE_LABEL": "Product image",
     "IMAGE_HINT": "JPG, PNG, GIF or WebP, max 5 MB",
     "IMAGE_CHOOSE": "Choose image"
+  },
+  "CART": {
+    "TITLE": "Shopping cart",
+    "CLEAR": "Clear cart",
+    "LOADING": "Loading cart...",
+    "EMPTY": "Your cart is empty.",
+    "CONTINUE_SHOPPING": "Continue shopping",
+    "SIZE": "Size",
+    "QTY": "Qty",
+    "REMOVE": "Remove",
+    "SUMMARY": "Order summary",
+    "ITEMS": "Items",
+    "TOTAL": "Total",
+    "SHIPPING_ADDRESS": "Shipping address",
+    "SHIPPING_PLACEHOLDER": "Street, city, postal code",
+    "CHECKOUT": "Checkout",
+    "PLACING_ORDER": "Placing order...",
+    "LOGIN_HINT": "Log in as a customer to complete checkout. Guest items are kept in this browser until you sign in.",
+    "ADD": "Add to cart",
+    "LOADING_SIZES": "Loading sizes...",
+    "LOW_STOCK": "Only this many left in stock"
   }
 }

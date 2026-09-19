@@ -63,5 +63,26 @@
     "IMAGE_LABEL": "Slika proizvoda",
     "IMAGE_HINT": "JPG, PNG, GIF ili WebP, najviše 5 MB",
     "IMAGE_CHOOSE": "Odaberi sliku"
+  },
+  "CART": {
+    "TITLE": "Korpa",
+    "CLEAR": "Isprazni korpu",
+    "LOADING": "Učitavanje korpe...",
+    "EMPTY": "Vaša korpa je prazna.",
+    "CONTINUE_SHOPPING": "Nastavi kupovinu",
+    "SIZE": "Veličina",
+    "QTY": "Kol.",
+    "REMOVE": "Ukloni",
+    "SUMMARY": "Pregled narudžbe",
+    "ITEMS": "Stavke",
+    "TOTAL": "Ukupno",
+    "SHIPPING_ADDRESS": "Adresa dostave",
+    "SHIPPING_PLACEHOLDER": "Ulica, grad, poštanski broj",
+    "CHECKOUT": "Naruči",
+    "PLACING_ORDER": "Slanje narudžbe...",
+    "LOGIN_HINT": "Prijavite se kao kupac da završite narudžbu. Stavke gostiju ostaju u browseru dok se ne prijavite.",
+    "ADD": "Dodaj u korpu",
+    "LOADING_SIZES": "Učitavanje veličina...",
+    "LOW_STOCK": "Na stanju je ostalo samo"
   }
 }

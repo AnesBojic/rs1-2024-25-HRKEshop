@@ -55,6 +55,8 @@ public class ApplicationDbContext(DbContextOptions options, IHttpContextAccessor
 
     public DbSet<Favorite> FavoritesAll { get; set; }
 
+    public DbSet<CartItem> CartItemsAll { get; set; }
+
     public DbSet<ProductRating> ProductRatingsAll { get; set; }
 
     public DbSet<EmailVerificationToken> EmailVerificationTokensAll { get; set; }
@@ -65,6 +67,7 @@ public class ApplicationDbContext(DbContextOptions options, IHttpContextAccessor
     public IQueryable<EmailVerificationToken> EmailVerificationTokens => Set<EmailVerificationToken>().Where(e => e.TenantId == CurrentTenantIdThrowIfFail);
     public IQueryable<ProductRating> ProductRatings => Set<ProductRating>().Where(e => e.TenantId == CurrentTenantIdThrowIfFail);
     public IQueryable<Favorite> Favorites => Set<Favorite>().Where(e => e.TenantId == CurrentTenantIdThrowIfFail);
+    public IQueryable<CartItem> CartItems => Set<CartItem>().Where(e => e.TenantId == CurrentTenantIdThrowIfFail);
     public IQueryable<SizeType> SizeTypes => Set<SizeType>().Where(e => e.TenantId == CurrentTenantIdThrowIfFail);
     public IQueryable<Size> Sizes => Set<Size>().Where(e => e.TenantId == CurrentTenantIdThrowIfFail);
     public IQueryable<ProductSize> ProductSizes => Set<ProductSize>().Where(e => e.TenantId == CurrentTenantIdThrowIfFail);
@@ -178,6 +181,10 @@ public class ApplicationDbContext(DbContextOptions options, IHttpContextAccessor
                 modelBuilder.Entity(clrType).ToTable(tableAttribute.Name);
             }
         }
+
+        modelBuilder.Entity<CartItem>()
+            .HasIndex(c => new { c.AppUserId, c.ProductSizeId, c.TenantId })
+            .IsUnique();
     }
     //Fix for updatedAt not working properly
     //fix

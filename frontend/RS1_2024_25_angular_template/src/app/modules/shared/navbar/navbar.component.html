@@ -16,7 +16,10 @@
 </span>
 
   <span class="spacer"></span>
-  <a mat-button *ngFor="let navlink of NAV_LINKS" [routerLink]="navlink.route" routerLinkActive="active-link" class="navbarButton">{{navlink.label}}</a>
+  <a mat-button *ngFor="let navlink of NAV_LINKS" [routerLink]="navlink.route" routerLinkActive="active-link" class="navbarButton">
+    {{navlink.label}}
+    <span class="cart-badge" *ngIf="navlink.route === '/cart' && cartCount > 0">{{ cartCount }}</span>
+  </a>
   <span class="spacer"></span>
 
 

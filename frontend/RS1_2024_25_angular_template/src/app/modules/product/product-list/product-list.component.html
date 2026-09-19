@@ -4,7 +4,7 @@
     <h2>{{ 'PRODUCT.TITLE_CREATE' | translate }}</h2>
 
     <div class="header-actions">
-      <button class="btn-add" (click)="goToNewProduct()">
+      <button class="btn-add" *ngIf="canManageProducts" (click)="goToNewProduct()">
         {{ 'PRODUCT.BUTTON_ADD' | translate }}
       </button>
 
@@ -14,6 +14,8 @@
       </button>
     </div>
   </div>
+
+  <p class="cart-feedback" *ngIf="cartMessage">{{ cartMessage }}</p>
 
   <div class="filters">
 
@@ -51,7 +53,7 @@
   </div>
 
   <div class="products-grid">
-    <div class="product-card" *ngFor="let p of products">
+    <div class="product-card" *ngFor="let p of products" (mouseenter)="ensureSizesLoaded(p.id)">
       <img [src]="getProductImageUrl(p)"
            (error)="onImageError($event)"
            alt="{{ p.name }}" />
@@ -59,15 +61,30 @@
       <div class="card-body">
         <h3>{{ p.name }}</h3>
         <p class="price">{{ p.price | currency:'BAM':'symbol' }}</p>
+
+        <label class="size-label" *ngIf="sizesByProduct[p.id]?.length">
+          {{ 'CART.SIZE' | translate }}
+          <select [(ngModel)]="selectedSizeByProduct[p.id]">
+            <option *ngFor="let size of sizesByProduct[p.id]" [ngValue]="size.productSizeId">
+              {{ size.sizeName }} ({{ size.stock }})
+            </option>
+          </select>
+        </label>
+        <p class="size-loading" *ngIf="loadingSizes[p.id]">{{ 'CART.LOADING_SIZES' | translate }}</p>
       </div>
 
       <div class="card-actions">
-        <button class="btn-edit" (click)="editProduct(p.id)">
-          {{ 'PRODUCT.BUTTON_EDIT' | translate }}
+        <button class="btn-cart" (click)="addToCart(p)">
+          {{ 'CART.ADD' | translate }}
         </button>
-        <button class="btn-delete" (click)="deleteProduct(p.id)">
-          {{ 'PRODUCT.BUTTON_DELETE' | translate }}
-        </button>
+        <ng-container *ngIf="canManageProducts">
+          <button class="btn-edit" (click)="editProduct(p.id)">
+            {{ 'PRODUCT.BUTTON_EDIT' | translate }}
+          </button>
+          <button class="btn-delete" (click)="deleteProduct(p.id)">
+            {{ 'PRODUCT.BUTTON_DELETE' | translate }}
+          </button>
+        </ng-container>
       </div>
     </div>
   </div>
