@@ -12,6 +12,7 @@ using RS1_2024_25.API.Endpoints.AppUserEndpoints;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
 
@@ -54,6 +55,12 @@ builder.Services.AddSignalR();
 // =====================
 // CONTROLLERS & SWAGGER
 // =====================
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = 10 * 1024 * 1024;
+    options.ValueLengthLimit = 10 * 1024 * 1024;
+});
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(x => x.OperationFilter<MyAuthorizationSwaggerHeader>());
@@ -121,6 +128,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 // =====================
 var app = builder.Build();
 
+EnsureWebRoot(app);
+
 // =====================
 // MIDDLEWARE PIPELINE
 // =====================
@@ -147,3 +156,15 @@ app.MapControllers();
 app.MapHub<MySignalrHub>("/mysginalr-hub-path");
 
 app.Run();
+
+static void EnsureWebRoot(WebApplication app)
+{
+    if (string.IsNullOrWhiteSpace(app.Environment.WebRootPath))
+    {
+        app.Environment.WebRootPath = Path.Combine(app.Environment.ContentRootPath, "wwwroot");
+    }
+
+    Directory.CreateDirectory(Path.Combine(app.Environment.WebRootPath, "images", "users"));
+    Directory.CreateDirectory(Path.Combine(app.Environment.WebRootPath, "images", "products"));
+    Directory.CreateDirectory(Path.Combine(app.Environment.WebRootPath, "images", "roles"));
+}

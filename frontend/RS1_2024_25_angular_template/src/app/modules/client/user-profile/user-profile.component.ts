@@ -2,9 +2,9 @@ import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {UserProfileResponse,AppuserUpdateRequestDto} from '../../../dto/appUser.dto';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ImageGetByEntityResponse,ImageGetByEntityRequest} from '../../../dto/image.dto';
-import {MyConfig} from '../../../my-config';
 import {AppUserApi} from '../../../api/appUser.api';
 import {ImageApi} from '../../../api/image.api';
+import { resolveApiAssetUrl } from '../../../helper/resolve-api-asset-url';
 
 @Component({
   selector: 'app-user-profile',
@@ -69,9 +69,11 @@ export class UserProfileComponent implements  OnInit{
   {
     const formData = new FormData();
     formData.append('Id',this.imageInfo!.id.toString());
+    formData.append('Name', `Profile image ${this.userProfile?.name ?? ''} ${this.userProfile?.surname ?? ''}`.trim());
     formData.append('ImageableId',this.userProfile!.id.toString());
     formData.append('Imageabletype','users');
-    formData.append('File',file);
+    formData.append('ImageableType','users');
+    formData.append('File',file, file.name);
 
     this.imageApi.imageUpdate(formData).subscribe({
       next:(res)=>
@@ -95,7 +97,8 @@ export class UserProfileComponent implements  OnInit{
     formData.append('Name',`Profile image ${this.userProfile?.name+""+this.userProfile?.surname}`);
     formData.append('ImageableId',this.userProfile!.id.toString());
     formData.append('Imageabletype','users');
-    formData.append('File',file);
+    formData.append('ImageableType','users');
+    formData.append('File',file, file.name);
 
 
     this.imageApi.imageUpload(formData).subscribe({
@@ -104,7 +107,7 @@ export class UserProfileComponent implements  OnInit{
         console.log("Upload good");
         this.imageInfo = {
           id: res.imageId,
-          url : res.url
+          url : resolveApiAssetUrl(res.url, '/images/defaulAvatar.jpg')
         }
         this.loadImageProfile();
       },
@@ -224,7 +227,7 @@ export class UserProfileComponent implements  OnInit{
         {
             this.imageInfo = {
               ...response[0],
-              url:`${MyConfig.api_address}${response[0].url}`
+              url: resolveApiAssetUrl(response[0].url, '/images/defaulAvatar.jpg')
             };
         }
         else

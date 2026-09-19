@@ -59,6 +59,9 @@
     "FILTER_ALL_BRANDS": "Svi brendovi",
     "FILTER_ALL_COLORS": "Sve boje",
     "FILTER_MIN_PRICE": "Minimalna cijena",
-    "FILTER_MAX_PRICE": "Maksimalna cijena"
+    "FILTER_MAX_PRICE": "Maksimalna cijena",
+    "IMAGE_LABEL": "Slika proizvoda",
+    "IMAGE_HINT": "JPG, PNG, GIF ili WebP, najviše 5 MB",
+    "IMAGE_CHOOSE": "Odaberi sliku"
   }
 }

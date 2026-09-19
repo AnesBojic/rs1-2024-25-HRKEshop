@@ -59,6 +59,9 @@
     "FILTER_ALL_BRANDS": "All brands",
     "FILTER_ALL_COLORS": "All colors",
     "FILTER_MIN_PRICE": "Min price",
-    "FILTER_MAX_PRICE": "Max price"
+    "FILTER_MAX_PRICE": "Max price",
+    "IMAGE_LABEL": "Product image",
+    "IMAGE_HINT": "JPG, PNG, GIF or WebP, max 5 MB",
+    "IMAGE_CHOOSE": "Choose image"
   }
 }

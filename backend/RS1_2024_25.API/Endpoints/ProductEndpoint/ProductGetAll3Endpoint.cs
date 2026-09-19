@@ -72,7 +72,12 @@ public class ProductGetAll3Endpoint(ApplicationDbContext db) : MyEndpointBaseAsy
             Price = p.Price,
             Gender = p.Gender,
             ColorId = p.ColorId,
-            BrandId = p.BrandId
+            BrandId = p.BrandId,
+            ImageUrl = db.ImagesAll
+                .Where(img => img.ImageableId == p.ID && img.ImageableType.ToLower() == "products")
+                .OrderByDescending(img => img.UpdatedAt)
+                .Select(img => img.Url)
+                .FirstOrDefault()
         });
 
         // Kreiranje paginiranog odgovora sa filterom
@@ -101,6 +106,6 @@ public class ProductGetAll3Endpoint(ApplicationDbContext db) : MyEndpointBaseAsy
         public Gender Gender { get; set; }
         public int ColorId { get; set; }
         public int BrandId { get; set; }
-
+        public string? ImageUrl { get; set; }
     }
 }

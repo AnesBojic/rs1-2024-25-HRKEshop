@@ -42,6 +42,7 @@ export interface ProductGetAll3Response {
   gender: Gender;
   colorId: number;
   brandId: number;
+  imageUrl?: string | null;
 }
 
 export interface ProductGetByIdResponse {
@@ -52,6 +53,7 @@ export interface ProductGetByIdResponse {
   colorId: number;
   brandId: number;
   tenantId: number;
+  imageUrl?: string | null;
 }
 
 export interface ProductUpdateOrInsertRequest {

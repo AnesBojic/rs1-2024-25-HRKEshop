@@ -13,19 +13,22 @@ export class AuthInterceptorService implements  HttpInterceptor{
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
     const token = this.authService.getAccessToken();
+    let headers = req.headers;
 
-    if(token)
-    {
-      const clonedReq = req.clone({
-        setHeaders : {
-          'my-auth-token':token,
-        },
-      });
-      return next.handle(clonedReq);
+    if (token) {
+      headers = headers.set('my-auth-token', token);
     }
 
+    // The browser must set the multipart boundary for file uploads.
+    if (req.body instanceof FormData && headers.has('Content-Type')) {
+      headers = headers.delete('Content-Type');
+    }
 
-    return next.handle(req);
+    if (headers === req.headers) {
+      return next.handle(req);
+    }
+
+    return next.handle(req.clone({ headers }));
   }
 
 

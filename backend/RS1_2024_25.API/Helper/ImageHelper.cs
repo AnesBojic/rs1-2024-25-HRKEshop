@@ -25,25 +25,24 @@ namespace RS1_2024_25.API.Helper
         };
 
 
-        public static bool isValid(string? type)=> !string.IsNullOrEmpty(type) && All.Contains(type);   
+        public static bool isValid(string? type)=> !string.IsNullOrEmpty(type) && All.Contains(type);
+
+        public static string Normalize(string? type) => (type ?? string.Empty).Trim().ToLowerInvariant();
 
         public static string[] GetAll()=> All.ToArray();
 
-        public static async Task<bool> IsValidAssociation(ApplicationDbContext db, string type, int id)
+        public static async Task<bool> IsValidAssociation(ApplicationDbContext db, string type, int id, CancellationToken cancellationToken = default)
         {
-            switch (type.Trim().ToLower())
+            switch (Normalize(type))
             {
-                case "users":
-                    return await db.AppUsersAll.AnyAsync(u => u.ID == id);
-                case "roles":
-                    return await db.Roles.AnyAsync(r => r.ID == id);
-                case "products":
-                    return await db.Products.AnyAsync(r => r.ID == id);
-
-
+                case Users:
+                    return await db.AppUsersAll.AnyAsync(u => u.ID == id, cancellationToken);
+                case Roles:
+                    return await db.Roles.AnyAsync(r => r.ID == id, cancellationToken);
+                case Products:
+                    return await db.Products.AnyAsync(r => r.ID == id, cancellationToken);
                 default:
                     return false;
-
             }
         }
 

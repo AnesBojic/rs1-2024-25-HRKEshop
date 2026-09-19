@@ -31,9 +31,12 @@ namespace RS1_2024_25.Tests.Testovi.Endpoints.ImageEndpoint
             envMock.Setup(e => e.WebRootPath).Returns(Path.GetTempPath());
 
             _fileService = new FileService(envMock.Object);
-            
 
-            _endpoint = new ImageUpdateEndpoint(_db,_fileService);
+            var authMock = new Mock<IAuthContext>();
+            authMock.Setup(a => a.AppUserId).Returns(1);
+            authMock.Setup(a => a.Role).Returns("Admin");
+
+            _endpoint = new ImageUpdateEndpoint(_db, _fileService, authMock.Object);
 
             var accessor = JwtTestHttpContextAccessorHelper.CreateWithJwtAuthenticatedUser();
 

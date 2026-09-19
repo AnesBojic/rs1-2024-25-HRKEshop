@@ -1,14 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProductsApi } from '../../../api/product.api';
 import { BrandApi } from '../../../api/brand.api';
 import { ColorApi } from '../../../api/color.api';
+import { ImageApi } from '../../../api/image.api';
 import {
   ProductUpdateOrInsertRequest,
   ProductGetByIdResponse,
   Gender
 } from '../../../dto/product.dto';
+import { ImageGetByEntityResponse } from '../../../dto/image.dto';
+import { resolveApiAssetUrl } from '../../../helper/resolve-api-asset-url';
 
 @Component({
   selector: 'app-product-form',
@@ -21,11 +24,21 @@ export class ProductFormComponent implements OnInit {
   form!: FormGroup;
   isEditMode: boolean = false;
   productId?: number;
+  isSaving = false;
+  imageError = '';
 
   brands: { id: number; name: string }[] = [];
   colors: { id: number; name: string }[] = [];
 
-  // Gender enum options
+  selectedFile: File | null = null;
+  previewUrl: string | null = null;
+  existingImage?: ImageGetByEntityResponse;
+
+  @ViewChild('imageInput') imageInput?: ElementRef<HTMLInputElement>;
+
+  private readonly allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
+  private readonly maxFileSize = 5 * 1024 * 1024;
+
   genders = [
     { id: Gender.Male, name: 'Muški' },
     { id: Gender.Female, name: 'Ženski' },
@@ -38,7 +51,8 @@ export class ProductFormComponent implements OnInit {
     private router: Router,
     private productsApi: ProductsApi,
     private brandApi: BrandApi,
-    private colorApi: ColorApi
+    private colorApi: ColorApi,
+    private imageApi: ImageApi
   ) {}
 
   ngOnInit(): void {
@@ -83,7 +97,71 @@ export class ProductFormComponent implements OnInit {
         colorId: data.colorId,
         brandId: data.brandId
       });
+
+      if (data.imageUrl) {
+        this.previewUrl = resolveApiAssetUrl(data.imageUrl);
+      }
+
+      this.loadExistingImage(id);
     });
+  }
+
+  loadExistingImage(productId: number): void {
+    this.imageApi.getImageByEntity({
+      ImageableId: productId,
+      ImageableType: 'products'
+    }).subscribe({
+      next: (images) => {
+        if (images.length > 0) {
+          this.existingImage = images[images.length - 1];
+          this.previewUrl = resolveApiAssetUrl(this.existingImage.url, this.previewUrl ?? '');
+        }
+      },
+      error: () => {
+        // Keep any URL already loaded from the product payload.
+      }
+    });
+  }
+
+  onImageSelected(event: Event): void {
+    const file = (event.target as HTMLInputElement)?.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    const extension = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+    if (!this.allowedExtensions.includes(extension)) {
+      this.imageError = 'Use a JPG, PNG, GIF, or WebP image.';
+      this.clearFileInput();
+      return;
+    }
+
+    if (file.size > this.maxFileSize) {
+      this.imageError = 'Image must be 5 MB or smaller.';
+      this.clearFileInput();
+      return;
+    }
+
+    this.imageError = '';
+    this.selectedFile = file;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.previewUrl = reader.result as string;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  clearSelectedImage(): void {
+    this.selectedFile = null;
+    this.imageError = '';
+    this.clearFileInput();
+
+    if (this.existingImage?.url) {
+      this.previewUrl = resolveApiAssetUrl(this.existingImage.url);
+    } else {
+      this.previewUrl = null;
+    }
   }
 
   createNewColor() {
@@ -94,21 +172,74 @@ export class ProductFormComponent implements OnInit {
     this.router.navigate(['/brand'], { relativeTo: this.route });
   }
 
-
-
   submit(): void {
-    if (this.form.invalid) return;
+    if (this.form.invalid || this.isSaving) return;
 
+    this.isSaving = true;
     const request: ProductUpdateOrInsertRequest = {
       ...this.form.value,
       id: this.isEditMode ? this.productId : undefined
     };
 
-    this.productsApi.updateOrInsert(request).subscribe(() => {
-      alert('Product has been updated.');
-      this.router.navigate(['/products']);
+    this.productsApi.updateOrInsert(request).subscribe({
+      next: (id) => {
+        const productId = this.isEditMode ? this.productId! : Number(id);
+        if (this.selectedFile) {
+          this.saveProductImage(productId);
+        } else {
+          this.finishSave();
+        }
+      },
+      error: () => {
+        this.isSaving = false;
+        this.imageError = 'Could not save the product.';
+      }
     });
   }
+
+  private saveProductImage(productId: number): void {
+    if (!this.selectedFile) {
+      this.finishSave();
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('Name', this.form.value.name || this.selectedFile.name);
+    formData.append('ImageableId', productId.toString());
+    formData.append('Imageabletype', 'products');
+    formData.append('ImageableType', 'products');
+    formData.append('File', this.selectedFile, this.selectedFile.name);
+
+    if (this.existingImage?.id) {
+      formData.append('Id', this.existingImage.id.toString());
+      this.imageApi.imageUpdate(formData).subscribe({
+        next: () => this.finishSave(),
+        error: () => {
+          this.isSaving = false;
+          this.imageError = 'Product saved, but the image could not be uploaded.';
+        }
+      });
+      return;
+    }
+
+    this.imageApi.imageUpload(formData).subscribe({
+      next: () => this.finishSave(),
+      error: () => {
+        this.isSaving = false;
+        this.imageError = 'Product saved, but the image could not be uploaded.';
+      }
+    });
+  }
+
+  private finishSave(): void {
+    this.isSaving = false;
+    alert('Product has been updated.');
+    this.router.navigate(['/products']);
+  }
+
+  private clearFileInput(): void {
+    if (this.imageInput?.nativeElement) {
+      this.imageInput.nativeElement.value = '';
+    }
+  }
 }
-
-

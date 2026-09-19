@@ -1,10 +1,10 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {AuthService} from '../../../services/auth-services/auth.service';
 import {Router} from '@angular/router';
-import {MyConfig} from '../../../my-config';
 import {ImageGetByEntityRequest} from '../../../dto/image.dto';
 import {NAV_LINKS, NavLink, ProfileAction} from '../../../helper/NavLink';
 import {ImageApi} from '../../../api/image.api';
+import {resolveApiAssetUrl} from '../../../helper/resolve-api-asset-url';
 
 @Component({
   selector: 'app-navbar',
@@ -109,7 +109,7 @@ export class NavbarComponent implements  OnInit{
           {
             if(response.length > 0 && response[0].url)
             {
-              this.imageInfo = `${MyConfig.api_address}${response[0].url}`;
+              this.imageInfo = resolveApiAssetUrl(response[0].url, '/images/defaulAvatar.jpg');
 
             }
           },

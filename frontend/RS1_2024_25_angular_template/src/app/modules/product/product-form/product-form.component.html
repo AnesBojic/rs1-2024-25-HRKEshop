@@ -37,9 +37,38 @@
     </select>
   </div>
 
+  <div class="image-upload">
+    <label>{{ 'PRODUCT.IMAGE_LABEL' | translate }}</label>
+    <p class="image-hint">{{ 'PRODUCT.IMAGE_HINT' | translate }}</p>
+
+    <div class="image-preview" *ngIf="previewUrl">
+      <img [src]="previewUrl" alt="Product image preview" />
+    </div>
+
+    <div class="image-actions">
+      <label class="choose-image-btn">
+        {{ 'PRODUCT.IMAGE_CHOOSE' | translate }}
+        <input
+          #imageInput
+          type="file"
+          accept=".jpg,.jpeg,.png,.gif,.webp,image/*"
+          (change)="onImageSelected($event)"
+          hidden />
+      </label>
+      <button
+        type="button"
+        class="clear-image-btn"
+        *ngIf="selectedFile"
+        (click)="clearSelectedImage()">
+        {{ 'COMMON.CANCEL' | translate }}
+      </button>
+    </div>
+    <p class="image-error" *ngIf="imageError">{{ imageError }}</p>
+  </div>
+
 
   <div class="form-buttons">
-    <button type="submit" [disabled]="form.invalid">{{ 'PRODUCT.BUTTON_SAVE' | translate }}</button>
+    <button type="submit" [disabled]="form.invalid || isSaving">{{ 'PRODUCT.BUTTON_SAVE' | translate }}</button>
     <button type="button" class="color-button" (click)="createNewColor()">
       {{ 'COLOR.BUTTON_ADD' | translate }}
     </button>

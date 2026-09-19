@@ -115,6 +115,32 @@ namespace RS1_2024_25.Tests.Testovi.Endpoints.ImageEndpoint
             Assert.Equal(2,resultRole.Count);
             Assert.Contains(resultRole,img=> img.Name == "SlikaRoleEntity0");
         }
+
+        [Fact]
+        public async Task HandleAsync_ReturnsProductImages_WhenTypeIsProducts()
+        {
+            var product = await _db.Products.FirstAsync();
+
+            await _db.ImagesAll.AddAsync(new Image
+            {
+                Name = "Product photo",
+                FilePath = "productPath",
+                Url = "/images/products/test.jpg",
+                ImageableId = product.ID,
+                ImageableType = "products"
+            });
+            await _db.SaveChangesAsync();
+
+            var result = await _endpoint.HandleAsync(new ImageGetByEntityRequest
+            {
+                ImageableId = product.ID,
+                ImageableType = "products"
+            });
+
+            Assert.NotNull(result);
+            Assert.Contains(result, img => img.Name == "Product photo");
+            Assert.Contains(result, img => img.Url == "/images/products/test.jpg");
+        }
         [Fact]
         public async Task HandleAsync_ThrowArgumentException_NonExistentType()
         {

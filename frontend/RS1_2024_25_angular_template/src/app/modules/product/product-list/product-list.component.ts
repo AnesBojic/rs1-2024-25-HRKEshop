@@ -8,6 +8,7 @@ import {
 } from '../../../dto/product.dto';
 import { BrandApi, BrandGetAllResponse } from '../../../api/brand.api';
 import { ColorApi, ColorGetAllResponse } from '../../../api/color.api';
+import { resolveApiAssetUrl } from '../../../helper/resolve-api-asset-url';
 
 @Component({
   selector: 'app-product-list',
@@ -156,8 +157,11 @@ export class ProductListComponent implements OnInit {
     });
   }
 
-  getProductImageUrl(product: any): string {
-    return `https://via.placeholder.com/200x150?text=${encodeURIComponent(product.name)}`;
+  getProductImageUrl(product: ProductGetAll3Response): string {
+    return resolveApiAssetUrl(
+      product.imageUrl,
+      `https://via.placeholder.com/200x150?text=${encodeURIComponent(product.name)}`
+    );
   }
 
   onImageError(event: Event) {

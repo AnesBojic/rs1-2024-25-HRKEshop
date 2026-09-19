@@ -66,3 +66,7 @@ coverage/
 
 # Temporary local files
 *.log
+
+# Uploaded shop images (keep folder structure)
+backend/RS1_2024_25.API/wwwroot/images/**/*.*
+!backend/RS1_2024_25.API/wwwroot/images/**/.gitkeep

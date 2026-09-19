@@ -27,8 +27,12 @@ public class ProductGetByIdEndpoint(ApplicationDbContext db) : MyEndpointBaseAsy
                                 Gender = p.Gender,
                                 ColorId = p.ColorId,
                                 BrandId = p.BrandId,
-                                TenantId = p.TenantId
-
+                                TenantId = p.TenantId,
+                                ImageUrl = db.ImagesAll
+                                    .Where(img => img.ImageableId == p.ID && img.ImageableType.ToLower() == "products")
+                                    .OrderByDescending(img => img.UpdatedAt)
+                                    .Select(img => img.Url)
+                                    .FirstOrDefault()
                             })
                             .FirstOrDefaultAsync(x => x.ID == id, cancellationToken);
 
@@ -50,7 +54,6 @@ public class ProductGetByIdEndpoint(ApplicationDbContext db) : MyEndpointBaseAsy
         public int ColorId { get; set; }
         public int BrandId { get; set; }
         public required int TenantId { get; set; }
-
-
+        public string? ImageUrl { get; set; }
     }
 }
