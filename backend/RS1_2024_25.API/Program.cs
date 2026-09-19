@@ -182,5 +182,21 @@ static void ApplyStartupDatabaseActions(WebApplication app)
 
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    db.Database.Migrate();
+    var logger = scope.ServiceProvider.GetRequiredService<ILoggerFactory>().CreateLogger("Startup");
+
+    const int maxAttempts = 30;
+    for (var attempt = 1; attempt <= maxAttempts; attempt++)
+    {
+        try
+        {
+            db.Database.Migrate();
+            logger.LogInformation("Database migrations applied successfully.");
+            return;
+        }
+        catch (Exception ex) when (attempt < maxAttempts)
+        {
+            logger.LogWarning(ex, "Waiting for SQL Server before migrating (attempt {Attempt}/{MaxAttempts})", attempt, maxAttempts);
+            Thread.Sleep(TimeSpan.FromSeconds(2));
+        }
+    }
 }
