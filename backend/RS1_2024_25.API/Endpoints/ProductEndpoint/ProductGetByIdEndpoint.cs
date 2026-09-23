@@ -27,6 +27,8 @@ public class ProductGetByIdEndpoint(ApplicationDbContext db) : MyEndpointBaseAsy
                                 Gender = p.Gender,
                                 ColorId = p.ColorId,
                                 BrandId = p.BrandId,
+                                CategoryId = p.CategoryId,
+                                CategoryName = p.Category != null ? p.Category.Name : null,
                                 TenantId = p.TenantId,
                                 ImageUrl = db.ImagesAll
                                     .Where(img => img.ImageableId == p.ID && img.ImageableType.ToLower() == "products")
@@ -53,6 +55,8 @@ public class ProductGetByIdEndpoint(ApplicationDbContext db) : MyEndpointBaseAsy
         public Gender Gender { get; set; }
         public int ColorId { get; set; }
         public int BrandId { get; set; }
+        public int? CategoryId { get; set; }
+        public string? CategoryName { get; set; }
         public required int TenantId { get; set; }
         public string? ImageUrl { get; set; }
     }

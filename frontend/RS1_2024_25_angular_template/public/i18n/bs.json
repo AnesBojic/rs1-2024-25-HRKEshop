@@ -41,6 +41,10 @@
     "GENDER_LABEL": "Spol",
     "COLOR_LABEL": "Boja",
     "BRAND_LABEL": "Brend",
+    "CATEGORY_LABEL": "Kategorija",
+    "CATEGORY_HINT": "Proizvodi u istoj kategoriji su isti artikal u drugim bojama. Svaka boja ima svoje veličine i stanje. Primjer: Jordan 1.",
+    "CATEGORY_NEW": "Nova kategorija",
+    "CATEGORY_NAME_LABEL": "Naziv nove kategorije",
     "BUTTON_SAVE": "Spremi",
     "BUTTON_ADD": "➕ Dodaj Proizvod",
     "BUTTON_EDIT": "✏ Uredi",
@@ -69,6 +73,7 @@
     "DETAILS_SIZES": "Dostupne veličine",
     "DETAILS_STOCK": "Na stanju",
     "DETAILS_IN_STOCK": "na stanju",
+    "DETAILS_OUT_OF_STOCK": "Nema na stanju",
     "DETAILS_SIMILAR": "Isti artikal u drugim bojama"
   },
   "CART": {

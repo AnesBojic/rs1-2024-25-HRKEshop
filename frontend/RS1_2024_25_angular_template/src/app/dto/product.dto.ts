@@ -60,6 +60,7 @@ export interface ProductColorVariant {
   colorName: string;
   colorHex: string;
   imageUrl?: string | null;
+  availableStock: number;
   isCurrent: boolean;
 }
 
@@ -73,6 +74,8 @@ export interface ProductDetailsResponse {
   colorHex: string;
   brandId: number;
   brandName: string;
+  categoryId?: number | null;
+  categoryName?: string;
   imageUrl?: string | null;
   sizes: ProductDetailsSize[];
   colorVariants: ProductColorVariant[];
@@ -85,6 +88,8 @@ export interface ProductGetByIdResponse {
   gender: Gender;
   colorId: number;
   brandId: number;
+  categoryId?: number | null;
+  categoryName?: string | null;
   tenantId: number;
   imageUrl?: string | null;
 }
@@ -96,6 +101,8 @@ export interface ProductUpdateOrInsertRequest {
   gender: Gender;
   colorId: number;
   brandId: number;
+  categoryId?: number | null;
+  newCategoryName?: string | null;
 }
 
 

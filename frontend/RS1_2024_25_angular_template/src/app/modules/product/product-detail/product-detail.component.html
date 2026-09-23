@@ -13,6 +13,10 @@
         <p class="price">{{ item.price | currency:'BAM':'symbol' }}</p>
 
         <dl class="facts">
+          <div *ngIf="item.categoryName">
+            <dt>{{ 'PRODUCT.CATEGORY_LABEL' | translate }}</dt>
+            <dd>{{ item.categoryName }}</dd>
+          </div>
           <div>
             <dt>{{ 'PRODUCT.BRAND_LABEL' | translate }}</dt>
             <dd>{{ item.brandName }}</dd>
@@ -64,7 +68,7 @@
       </table>
     </section>
 
-    <section class="variants" *ngIf="item.colorVariants.length > 1">
+    <section class="variants" *ngIf="item.colorVariants.length">
       <h2>{{ 'PRODUCT.DETAILS_SIMILAR' | translate }}</h2>
       <div class="variant-grid">
         <button
@@ -77,6 +81,12 @@
           <span class="swatch" [style.background]="variant.colorHex"></span>
           <strong>{{ variant.colorName }}</strong>
           <span>{{ variant.price | currency:'BAM':'symbol' }}</span>
+          <span class="stock" *ngIf="variant.availableStock > 0">
+            {{ variant.availableStock }} {{ 'PRODUCT.DETAILS_IN_STOCK' | translate }}
+          </span>
+          <span class="stock out" *ngIf="variant.availableStock <= 0">
+            {{ 'PRODUCT.DETAILS_OUT_OF_STOCK' | translate }}
+          </span>
         </button>
       </div>
     </section>

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RS1_2024_25.API.Data;
 using RS1_2024_25.API.Data.Enums;
+using RS1_2024_25.API.Data.Models.TenantSpecificTables.Modul2_Basic;
 using RS1_2024_25.API.Helper.Api;
 
 namespace RS1_2024_25.API.Endpoints.ProductEndpoints;
@@ -32,10 +33,25 @@ public class ProductDetailsEndpoint(ApplicationDbContext db) : MyEndpointBaseAsy
             .Select(b => b.Name)
             .FirstOrDefaultAsync(cancellationToken);
 
-        var siblings = await db.Products
-            .Where(p => p.Name == product.Name)
-            .OrderBy(p => p.ColorId)
-            .ToListAsync(cancellationToken);
+        string? categoryName = null;
+        List<Product> siblings;
+        if (product.CategoryId == null)
+        {
+            siblings = new List<Product> { product };
+        }
+        else
+        {
+            categoryName = await db.Categories
+                .Where(c => c.ID == product.CategoryId)
+                .Select(c => c.Name)
+                .FirstOrDefaultAsync(cancellationToken);
+
+            siblings = await db.Products
+                .Where(p => p.CategoryId == product.CategoryId)
+                .OrderBy(p => p.ColorId)
+                .ThenBy(p => p.ID)
+                .ToListAsync(cancellationToken);
+        }
 
         var productIds = siblings.Select(p => p.ID).Append(product.ID).Distinct().ToList();
         var colorIds = siblings.Select(p => p.ColorId).Distinct().ToList();
@@ -53,6 +69,12 @@ public class ProductDetailsEndpoint(ApplicationDbContext db) : MyEndpointBaseAsy
                 Url = group.OrderByDescending(img => img.UpdatedAt).Select(img => img.Url).FirstOrDefault()
             })
             .ToDictionaryAsync(x => x.ProductId, x => x.Url, cancellationToken);
+
+        var stockByProduct = await db.ProductsSizesAll
+            .Where(ps => productIds.Contains(ps.ProductId))
+            .GroupBy(ps => ps.ProductId)
+            .Select(group => new { ProductId = group.Key, Stock = group.Sum(ps => ps.Stock) })
+            .ToDictionaryAsync(x => x.ProductId, x => x.Stock, cancellationToken);
 
         var sizes = await db.ProductsSizesAll
             .Where(ps => ps.ProductId == product.ID)
@@ -78,6 +100,8 @@ public class ProductDetailsEndpoint(ApplicationDbContext db) : MyEndpointBaseAsy
             ColorHex = color?.Hex_Code ?? "#cccccc",
             BrandId = product.BrandId,
             BrandName = brandName ?? "",
+            CategoryId = product.CategoryId,
+            CategoryName = categoryName ?? "",
             ImageUrl = images.GetValueOrDefault(product.ID),
             Sizes = sizes,
             ColorVariants = siblings.Select(sibling =>
@@ -92,6 +116,7 @@ public class ProductDetailsEndpoint(ApplicationDbContext db) : MyEndpointBaseAsy
                     ColorName = siblingColor?.Name ?? "",
                     ColorHex = siblingColor?.Hex_Code ?? "#cccccc",
                     ImageUrl = images.GetValueOrDefault(sibling.ID),
+                    AvailableStock = stockByProduct.GetValueOrDefault(sibling.ID),
                     IsCurrent = sibling.ID == product.ID
                 };
             }).ToList()
@@ -109,6 +134,8 @@ public class ProductDetailsEndpoint(ApplicationDbContext db) : MyEndpointBaseAsy
         public string ColorHex { get; set; } = "";
         public int BrandId { get; set; }
         public string BrandName { get; set; } = "";
+        public int? CategoryId { get; set; }
+        public string CategoryName { get; set; } = "";
         public string? ImageUrl { get; set; }
         public List<ProductDetailsSizeResponse> Sizes { get; set; } = new();
         public List<ProductColorVariantResponse> ColorVariants { get; set; } = new();
@@ -131,6 +158,7 @@ public class ProductDetailsEndpoint(ApplicationDbContext db) : MyEndpointBaseAsy
         public string ColorName { get; set; } = "";
         public string ColorHex { get; set; } = "";
         public string? ImageUrl { get; set; }
+        public int AvailableStock { get; set; }
         public bool IsCurrent { get; set; }
     }
 }

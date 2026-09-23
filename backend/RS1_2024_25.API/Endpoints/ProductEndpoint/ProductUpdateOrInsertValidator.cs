@@ -19,6 +19,15 @@ public class ProductUpdateOrInsertValidator : AbstractValidator<ProductUpdateOrI
         RuleFor(x => x.Name)
             .MinimumLength(3).WithMessage("Name of the product has to have at least 3 characters.");
 
+        RuleFor(x => x)
+            .Must(x => (x.CategoryId.HasValue && x.CategoryId > 0) || !string.IsNullOrWhiteSpace(x.NewCategoryName))
+            .WithMessage("Select an existing category or enter a new category name.");
+
+        RuleFor(x => x.NewCategoryName)
+            .MinimumLength(2).WithMessage("Category name has to have at least 2 characters.")
+            .MaximumLength(80).WithMessage("Category name can have at most 80 characters.")
+            .When(x => !string.IsNullOrWhiteSpace(x.NewCategoryName));
+
         //RuleFor(x => x.TenantId)
         //    .NotNull().WithMessage("TenantId is required");
 

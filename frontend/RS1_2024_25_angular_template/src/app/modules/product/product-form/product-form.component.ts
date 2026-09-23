@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ProductsApi } from '../../../api/product.api';
 import { BrandApi } from '../../../api/brand.api';
 import { ColorApi } from '../../../api/color.api';
+import { CategoryApi } from '../../../api/category.api';
 import { ImageApi } from '../../../api/image.api';
 import {
   ProductUpdateOrInsertRequest,
@@ -29,6 +30,7 @@ export class ProductFormComponent implements OnInit {
 
   brands: { id: number; name: string }[] = [];
   colors: { id: number; name: string }[] = [];
+  categories: { id: number; name: string }[] = [];
 
   selectedFile: File | null = null;
   previewUrl: string | null = null;
@@ -52,6 +54,7 @@ export class ProductFormComponent implements OnInit {
     private productsApi: ProductsApi,
     private brandApi: BrandApi,
     private colorApi: ColorApi,
+    private categoryApi: CategoryApi,
     private imageApi: ImageApi
   ) {}
 
@@ -61,11 +64,28 @@ export class ProductFormComponent implements OnInit {
       price: [0, [Validators.required, Validators.min(0)]],
       gender: [Gender.Male, Validators.required],
       colorId: [null, Validators.required],
-      brandId: [null, Validators.required]
+      brandId: [null, Validators.required],
+      categoryChoice: [null, Validators.required],
+      newCategoryName: ['']
+    });
+
+    this.form.get('categoryChoice')?.valueChanges.subscribe((value) => {
+      const nameControl = this.form.get('newCategoryName');
+      if (!nameControl) {
+        return;
+      }
+      if (value === 'new') {
+        nameControl.setValidators([Validators.required, Validators.minLength(2), Validators.maxLength(80)]);
+      } else {
+        nameControl.clearValidators();
+        nameControl.setValue('', { emitEvent: false });
+      }
+      nameControl.updateValueAndValidity({ emitEvent: false });
     });
 
     this.loadBrands();
     this.loadColors();
+    this.loadCategories();
 
     this.route.params.subscribe(params => {
       if (params['id']) {
@@ -88,6 +108,14 @@ export class ProductFormComponent implements OnInit {
     });
   }
 
+  loadCategories() {
+    this.categoryApi.getAll().subscribe(categories => {
+      this.categories = categories
+        .map(c => ({ id: c.id, name: c.name }))
+        .sort((a, b) => a.name.localeCompare(b.name));
+    });
+  }
+
   loadProduct(id: number): void {
     this.productsApi.getById(id).subscribe((data: ProductGetByIdResponse) => {
       this.form.patchValue({
@@ -95,7 +123,8 @@ export class ProductFormComponent implements OnInit {
         price: data.price,
         gender: data.gender,
         colorId: data.colorId,
-        brandId: data.brandId
+        brandId: data.brandId,
+        categoryChoice: data.categoryId ?? null
       });
 
       if (data.imageUrl) {
@@ -176,9 +205,16 @@ export class ProductFormComponent implements OnInit {
     if (this.form.invalid || this.isSaving) return;
 
     this.isSaving = true;
+    const isNewCategory = this.form.value.categoryChoice === 'new';
     const request: ProductUpdateOrInsertRequest = {
-      ...this.form.value,
-      id: this.isEditMode ? this.productId : undefined
+      name: this.form.value.name,
+      price: this.form.value.price,
+      gender: this.form.value.gender,
+      colorId: this.form.value.colorId,
+      brandId: this.form.value.brandId,
+      id: this.isEditMode ? this.productId : undefined,
+      categoryId: isNewCategory ? null : Number(this.form.value.categoryChoice),
+      newCategoryName: isNewCategory ? String(this.form.value.newCategoryName).trim() : null
     };
 
     this.productsApi.updateOrInsert(request).subscribe({

@@ -41,6 +41,10 @@
     "GENDER_LABEL": "Gender",
     "COLOR_LABEL": "Color",
     "BRAND_LABEL": "Brand",
+    "CATEGORY_LABEL": "Category",
+    "CATEGORY_HINT": "Products in the same category are the same article in different colors. Each color keeps its own sizes and stock. Example: Jordan 1.",
+    "CATEGORY_NEW": "New category",
+    "CATEGORY_NAME_LABEL": "New category name",
     "BUTTON_SAVE": "Save",
     "BUTTON_ADD": "➕ Add Product",
     "BUTTON_EDIT": "✏ Edit",
@@ -69,6 +73,7 @@
     "DETAILS_SIZES": "Available sizes",
     "DETAILS_STOCK": "In stock",
     "DETAILS_IN_STOCK": "in stock",
+    "DETAILS_OUT_OF_STOCK": "Out of stock",
     "DETAILS_SIMILAR": "Same article in other colors"
   },
   "CART": {

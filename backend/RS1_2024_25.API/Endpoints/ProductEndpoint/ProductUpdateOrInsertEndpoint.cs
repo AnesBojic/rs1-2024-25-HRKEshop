@@ -55,16 +55,48 @@ public class ProductUpdateOrInsertEndpoint(ApplicationDbContext db) : MyEndpoint
         product.Name = request.Name;
         product.Price = request.Price;
         product.Gender = request.Gender;
-
-
         product.ColorId = request.ColorId;
         product.BrandId = request.BrandId;
-      //  product.TenantId = request.TenantId;
+        var categoryId = await ResolveCategoryIdAsync(request, cancellationToken);
+        if (categoryId == null)
+        {
+            return BadRequest("Select an existing category or enter a new category name.");
+        }
 
-        // Save changes to the database
+        product.CategoryId = categoryId.Value;
+
         await db.SaveChangesAsync(cancellationToken);
 
-        return Ok(product.ID); // Return the ID of the student
+        return Ok(product.ID);
+    }
+
+    private async Task<int?> ResolveCategoryIdAsync(ProductUpdateOrInsertRequest request, CancellationToken cancellationToken)
+    {
+        var newName = request.NewCategoryName?.Trim();
+        if (!string.IsNullOrEmpty(newName))
+        {
+            var existing = await db.Categories
+                .FirstOrDefaultAsync(c => c.Name.ToLower() == newName.ToLower(), cancellationToken);
+
+            if (existing != null)
+            {
+                return existing.ID;
+            }
+
+            var category = new Category { Name = newName };
+            db.Add(category);
+            await db.SaveChangesAsync(cancellationToken);
+            return category.ID;
+        }
+
+        var categoryId = request.CategoryId ?? 0;
+        var categoryExists = await db.Categories.AnyAsync(c => c.ID == categoryId, cancellationToken);
+        if (!categoryExists)
+        {
+            return null;
+        }
+
+        return categoryId;
     }
 
     public class ProductUpdateOrInsertRequest
@@ -75,7 +107,7 @@ public class ProductUpdateOrInsertEndpoint(ApplicationDbContext db) : MyEndpoint
         public Gender Gender { get; set; }
         public int ColorId { get; set; }
         public int BrandId { get; set; }
-       // public int TenantId { get; set; }
-
+        public int? CategoryId { get; set; }
+        public string? NewCategoryName { get; set; }
     }
 }

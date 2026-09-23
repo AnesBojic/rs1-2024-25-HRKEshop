@@ -356,6 +356,7 @@ namespace RS1_2024_25.API.Endpoints.DataSeedEndpoints
             await db.SaveChangesAsync(cancellationToken);
 
             await EnsureCatalogForEveryTenantAsync(db, cancellationToken);
+            await EnsureProductCategoriesAsync(db, cancellationToken);
             await EnsureColorVariantsAsync(db, cancellationToken);
             await EnsureProductImagesAsync(db, env, cancellationToken);
 
@@ -421,6 +422,15 @@ namespace RS1_2024_25.API.Endpoints.DataSeedEndpoints
                     sizeMap[size.ID] = copy.ID;
                 }
 
+                var categoryMap = new Dictionary<int, int>();
+                foreach (var category in await db.CategoryAll.Where(c => c.TenantId == sourceTenantId).ToListAsync(cancellationToken))
+                {
+                    var copy = new Category { Name = category.Name, TenantId = tenantId };
+                    db.CategoryAll.Add(copy);
+                    await db.SaveChangesAsync(cancellationToken);
+                    categoryMap[category.ID] = copy.ID;
+                }
+
                 var productMap = new Dictionary<int, int>();
                 foreach (var product in await db.ProductsAll.Where(p => p.TenantId == sourceTenantId).ToListAsync(cancellationToken))
                 {
@@ -431,6 +441,9 @@ namespace RS1_2024_25.API.Endpoints.DataSeedEndpoints
                         Gender = product.Gender,
                         ColorId = product.ColorId,
                         BrandId = brandMap.TryGetValue(product.BrandId, out var newBrandId) ? newBrandId : product.BrandId,
+                        CategoryId = product.CategoryId.HasValue && categoryMap.TryGetValue(product.CategoryId.Value, out var newCategoryId)
+                            ? newCategoryId
+                            : product.CategoryId,
                         TenantId = tenantId
                     };
                     db.ProductsAll.Add(copy);
@@ -459,6 +472,45 @@ namespace RS1_2024_25.API.Endpoints.DataSeedEndpoints
 
                 await db.SaveChangesAsync(cancellationToken);
             }
+        }
+
+        private static async Task EnsureProductCategoriesAsync(ApplicationDbContext db, CancellationToken cancellationToken)
+        {
+            var products = await db.ProductsAll
+                .Where(p => p.CategoryId == null)
+                .ToListAsync(cancellationToken);
+            if (products.Count == 0)
+            {
+                return;
+            }
+
+            var categories = await db.CategoryAll.ToListAsync(cancellationToken);
+            foreach (var group in products.GroupBy(p => new { p.TenantId, Name = p.Name.Trim().ToLower() }))
+            {
+                var displayName = group.OrderBy(p => p.ID).First().Name.Trim();
+                var category = categories.FirstOrDefault(c =>
+                    c.TenantId == group.Key.TenantId
+                    && string.Equals(c.Name.Trim(), displayName, StringComparison.OrdinalIgnoreCase));
+
+                if (category == null)
+                {
+                    category = new Category
+                    {
+                        Name = displayName,
+                        TenantId = group.Key.TenantId
+                    };
+                    db.CategoryAll.Add(category);
+                    await db.SaveChangesAsync(cancellationToken);
+                    categories.Add(category);
+                }
+
+                foreach (var product in group)
+                {
+                    product.CategoryId = category.ID;
+                }
+            }
+
+            await db.SaveChangesAsync(cancellationToken);
         }
 
         private static async Task EnsureColorVariantsAsync(ApplicationDbContext db, CancellationToken cancellationToken)
@@ -495,6 +547,7 @@ namespace RS1_2024_25.API.Endpoints.DataSeedEndpoints
                             Gender = source.Gender,
                             ColorId = color.ID,
                             BrandId = source.BrandId,
+                            CategoryId = source.CategoryId,
                             TenantId = tenantId
                         };
                         db.ProductsAll.Add(copy);
