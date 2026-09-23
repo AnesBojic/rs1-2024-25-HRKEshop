@@ -62,7 +62,14 @@
     "FILTER_MAX_PRICE": "Max price",
     "IMAGE_LABEL": "Product image",
     "IMAGE_HINT": "JPG, PNG, GIF or WebP, max 5 MB",
-    "IMAGE_CHOOSE": "Choose image"
+    "IMAGE_CHOOSE": "Choose image",
+    "DETAILS_BACK": "← Back to products",
+    "DETAILS_LOADING": "Loading product...",
+    "DETAILS_NOT_FOUND": "This product could not be found.",
+    "DETAILS_SIZES": "Available sizes",
+    "DETAILS_STOCK": "In stock",
+    "DETAILS_IN_STOCK": "in stock",
+    "DETAILS_SIMILAR": "Same article in other colors"
   },
   "CART": {
     "TITLE": "Shopping cart",

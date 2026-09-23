@@ -6,6 +6,7 @@ import {
   ProductGetAll1Response,
   ProductGetAll3Request,
   ProductGetAll3Response,
+  ProductDetailsResponse,
   ProductGetByIdResponse,
   ProductUpdateOrInsertRequest,
   MyPagedList
@@ -53,6 +54,13 @@ export class ProductsApi {
         params,
         ...httpOptionsHelper()
       }
+    );
+  }
+
+  getDetails(id: number): Observable<ProductDetailsResponse> {
+    return this.http.get<ProductDetailsResponse>(
+      `${this.baseUrl}/product/${id}/details`,
+      httpOptionsHelper()
     );
   }
 

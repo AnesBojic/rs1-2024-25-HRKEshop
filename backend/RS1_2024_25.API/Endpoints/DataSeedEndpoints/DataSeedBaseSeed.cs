@@ -356,6 +356,7 @@ namespace RS1_2024_25.API.Endpoints.DataSeedEndpoints
             await db.SaveChangesAsync(cancellationToken);
 
             await EnsureCatalogForEveryTenantAsync(db, cancellationToken);
+            await EnsureColorVariantsAsync(db, cancellationToken);
             await EnsureProductImagesAsync(db, env, cancellationToken);
 
             return "Data generated successfully :D";
@@ -457,6 +458,63 @@ namespace RS1_2024_25.API.Endpoints.DataSeedEndpoints
                 }
 
                 await db.SaveChangesAsync(cancellationToken);
+            }
+        }
+
+        private static async Task EnsureColorVariantsAsync(ApplicationDbContext db, CancellationToken cancellationToken)
+        {
+            var colors = await db.Colors.OrderBy(c => c.ID).ToListAsync(cancellationToken);
+            if (colors.Count < 2)
+            {
+                return;
+            }
+
+            var tenantIds = await db.Tenants.Select(t => t.ID).ToListAsync(cancellationToken);
+            foreach (var tenantId in tenantIds)
+            {
+                var products = await db.ProductsAll.Where(p => p.TenantId == tenantId).ToListAsync(cancellationToken);
+                foreach (var group in products.GroupBy(p => p.Name))
+                {
+                    var usedColors = group.Select(p => p.ColorId).ToHashSet();
+                    if (usedColors.Count >= 3)
+                    {
+                        continue;
+                    }
+
+                    var source = group.OrderBy(p => p.ID).First();
+                    var sourceSizes = await db.ProductsSizesAll
+                        .Where(ps => ps.ProductId == source.ID)
+                        .ToListAsync(cancellationToken);
+
+                    foreach (var color in colors.Where(c => !usedColors.Contains(c.ID)).Take(3 - usedColors.Count))
+                    {
+                        var copy = new Product
+                        {
+                            Name = source.Name,
+                            Price = source.Price,
+                            Gender = source.Gender,
+                            ColorId = color.ID,
+                            BrandId = source.BrandId,
+                            TenantId = tenantId
+                        };
+                        db.ProductsAll.Add(copy);
+                        await db.SaveChangesAsync(cancellationToken);
+
+                        foreach (var size in sourceSizes)
+                        {
+                            db.ProductsSizesAll.Add(new ProductSize
+                            {
+                                ProductId = copy.ID,
+                                SizeId = size.SizeId,
+                                TenantId = tenantId,
+                                Price = size.Price,
+                                Stock = size.Stock
+                            });
+                        }
+
+                        await db.SaveChangesAsync(cancellationToken);
+                    }
+                }
             }
         }
 

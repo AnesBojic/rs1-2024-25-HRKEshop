@@ -125,6 +125,10 @@
   object-fit: cover;
 }
 
+.product-link {
+  cursor: pointer;
+}
+
 .card-body {
   padding: 12px;
   flex-grow: 1;

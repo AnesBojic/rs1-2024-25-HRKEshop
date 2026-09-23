@@ -7,12 +7,14 @@ import { RouterModule } from '@angular/router';
 import { ProductRoutingModule } from './product-routing.module';
 import { ProductListComponent } from './product-list/product-list.component';
 import { ProductFormComponent } from './product-form/product-form.component';
+import { ProductDetailComponent } from './product-detail/product-detail.component';
 import {TranslateModule} from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
     ProductListComponent,
-    ProductFormComponent
+    ProductFormComponent,
+    ProductDetailComponent
   ],
   imports: [
     CommonModule,

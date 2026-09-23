@@ -1,0 +1,84 @@
+<div class="detail-page">
+  <button class="back-link" type="button" (click)="back()">{{ 'PRODUCT.DETAILS_BACK' | translate }}</button>
+
+  <p *ngIf="loading">{{ 'PRODUCT.DETAILS_LOADING' | translate }}</p>
+  <p *ngIf="notFound && !loading">{{ 'PRODUCT.DETAILS_NOT_FOUND' | translate }}</p>
+
+  <ng-container *ngIf="product as item">
+    <div class="detail-layout">
+      <img class="hero" [src]="imageUrl(item.imageUrl)" [alt]="item.name" />
+
+      <div class="detail-info">
+        <h1>{{ item.name }}</h1>
+        <p class="price">{{ item.price | currency:'BAM':'symbol' }}</p>
+
+        <dl class="facts">
+          <div>
+            <dt>{{ 'PRODUCT.BRAND_LABEL' | translate }}</dt>
+            <dd>{{ item.brandName }}</dd>
+          </div>
+          <div>
+            <dt>{{ 'PRODUCT.COLOR_LABEL' | translate }}</dt>
+            <dd class="color-value">
+              <span class="swatch" [style.background]="item.colorHex"></span>
+              {{ item.colorName }}
+            </dd>
+          </div>
+          <div>
+            <dt>{{ 'PRODUCT.GENDER_LABEL' | translate }}</dt>
+            <dd>{{ genderLabel(item.gender) | translate }}</dd>
+          </div>
+        </dl>
+
+        <label class="size-label" *ngIf="item.sizes.length">
+          {{ 'CART.SIZE' | translate }}
+          <select [(ngModel)]="selectedSizeId">
+            <option *ngFor="let size of item.sizes" [ngValue]="size.productSizeId">
+              {{ size.sizeName }} — {{ size.stock }} {{ 'PRODUCT.DETAILS_IN_STOCK' | translate }}
+            </option>
+          </select>
+        </label>
+
+        <button class="btn-cart" type="button" (click)="addToCart()">{{ 'CART.ADD' | translate }}</button>
+        <p class="message" *ngIf="message">{{ message }}</p>
+      </div>
+    </div>
+
+    <section class="sizes" *ngIf="item.sizes.length">
+      <h2>{{ 'PRODUCT.DETAILS_SIZES' | translate }}</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>{{ 'CART.SIZE' | translate }}</th>
+            <th>{{ 'PRODUCT.PRICE_LABEL' | translate }}</th>
+            <th>{{ 'PRODUCT.DETAILS_STOCK' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let size of item.sizes">
+            <td>{{ size.sizeName }}</td>
+            <td>{{ size.price | currency:'BAM':'symbol' }}</td>
+            <td>{{ size.stock }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="variants" *ngIf="item.colorVariants.length > 1">
+      <h2>{{ 'PRODUCT.DETAILS_SIMILAR' | translate }}</h2>
+      <div class="variant-grid">
+        <button
+          type="button"
+          class="variant-card"
+          *ngFor="let variant of item.colorVariants"
+          [class.current]="variant.isCurrent"
+          (click)="openVariant(variant.id)">
+          <img [src]="imageUrl(variant.imageUrl)" [alt]="variant.colorName" />
+          <span class="swatch" [style.background]="variant.colorHex"></span>
+          <strong>{{ variant.colorName }}</strong>
+          <span>{{ variant.price | currency:'BAM':'symbol' }}</span>
+        </button>
+      </div>
+    </section>
+  </ng-container>
+</div>

@@ -236,6 +236,10 @@ export class ProductListComponent implements OnInit {
     }
   }
 
+  openProduct(id: number) {
+    this.router.navigate(['/products', id]);
+  }
+
   editProduct(id: number) {
     this.router.navigate(['/products/edit', id]);
   }

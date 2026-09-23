@@ -1,0 +1,155 @@
+.detail-page {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.back-link {
+  align-self: flex-start;
+  background: transparent;
+  border: none;
+  color: #1565c0;
+  cursor: pointer;
+  font-size: 15px;
+  padding: 0;
+}
+
+.detail-layout {
+  display: grid;
+  grid-template-columns: minmax(240px, 420px) 1fr;
+  gap: 28px;
+  align-items: start;
+}
+
+.hero {
+  width: 100%;
+  border-radius: 12px;
+  background: #f3f3f3;
+  object-fit: cover;
+  aspect-ratio: 4 / 3;
+}
+
+.detail-info h1 {
+  margin: 0 0 8px;
+}
+
+.price {
+  margin: 0 0 16px;
+  font-size: 24px;
+  font-weight: 700;
+  color: #2196f3;
+}
+
+.facts {
+  display: grid;
+  gap: 10px;
+  margin: 0 0 18px;
+}
+
+.facts div {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 8px;
+}
+
+.facts dt {
+  color: #666;
+}
+
+.facts dd {
+  margin: 0;
+}
+
+.color-value,
+.variant-card strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.swatch {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  display: inline-block;
+}
+
+.size-label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: 280px;
+  margin-bottom: 14px;
+}
+
+.size-label select {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.btn-cart {
+  background: #2e7d32;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 16px;
+  cursor: pointer;
+}
+
+.message {
+  margin: 12px 0 0;
+  color: #1b5e20;
+}
+
+.sizes table {
+  width: 100%;
+  max-width: 520px;
+  border-collapse: collapse;
+}
+
+.sizes th,
+.sizes td {
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.variant-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 14px;
+}
+
+.variant-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 10px;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  background: white;
+  cursor: pointer;
+  text-align: left;
+}
+
+.variant-card.current {
+  border-color: #1976d2;
+  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+}
+
+.variant-card img {
+  width: 100%;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+@media (max-width: 800px) {
+  .detail-layout {
+    grid-template-columns: 1fr;
+  }
+}

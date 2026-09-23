@@ -45,6 +45,39 @@ export interface ProductGetAll3Response {
   imageUrl?: string | null;
 }
 
+export interface ProductDetailsSize {
+  productSizeId: number;
+  sizeName: string;
+  price: number;
+  stock: number;
+}
+
+export interface ProductColorVariant {
+  id: number;
+  name: string;
+  price: number;
+  colorId: number;
+  colorName: string;
+  colorHex: string;
+  imageUrl?: string | null;
+  isCurrent: boolean;
+}
+
+export interface ProductDetailsResponse {
+  id: number;
+  name: string;
+  price: number;
+  gender: Gender;
+  colorId: number;
+  colorName: string;
+  colorHex: string;
+  brandId: number;
+  brandName: string;
+  imageUrl?: string | null;
+  sizes: ProductDetailsSize[];
+  colorVariants: ProductColorVariant[];
+}
+
 export interface ProductGetByIdResponse {
   id: number;
   name: string;

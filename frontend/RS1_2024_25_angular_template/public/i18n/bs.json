@@ -62,7 +62,14 @@
     "FILTER_MAX_PRICE": "Maksimalna cijena",
     "IMAGE_LABEL": "Slika proizvoda",
     "IMAGE_HINT": "JPG, PNG, GIF ili WebP, najviše 5 MB",
-    "IMAGE_CHOOSE": "Odaberi sliku"
+    "IMAGE_CHOOSE": "Odaberi sliku",
+    "DETAILS_BACK": "← Nazad na proizvode",
+    "DETAILS_LOADING": "Učitavanje proizvoda...",
+    "DETAILS_NOT_FOUND": "Proizvod nije pronađen.",
+    "DETAILS_SIZES": "Dostupne veličine",
+    "DETAILS_STOCK": "Na stanju",
+    "DETAILS_IN_STOCK": "na stanju",
+    "DETAILS_SIMILAR": "Isti artikal u drugim bojama"
   },
   "CART": {
     "TITLE": "Korpa",

@@ -54,12 +54,13 @@
 
   <div class="products-grid">
     <div class="product-card" *ngFor="let p of products" (mouseenter)="ensureSizesLoaded(p.id)">
-      <img [src]="getProductImageUrl(p)"
+      <img class="product-link" [src]="getProductImageUrl(p)"
+           (click)="openProduct(p.id)"
            (error)="onImageError($event)"
            alt="{{ p.name }}" />
 
       <div class="card-body">
-        <h3>{{ p.name }}</h3>
+        <h3 class="product-link" (click)="openProduct(p.id)">{{ p.name }}</h3>
         <p class="price">{{ p.price | currency:'BAM':'symbol' }}</p>
 
         <label class="size-label" *ngIf="sizesByProduct[p.id]?.length">
