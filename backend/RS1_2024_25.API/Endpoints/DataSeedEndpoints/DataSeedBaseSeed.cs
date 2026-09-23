@@ -1,5 +1,6 @@
 ﻿
 using Bogus;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Extensions;
@@ -10,11 +11,13 @@ using RS1_2024_25.API.Data.Models.TenantSpecificTables.Modul1_Auth;
 using RS1_2024_25.API.Data.Models.TenantSpecificTables.Modul2_Basic;
 using RS1_2024_25.API.Helper.Api;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.IO.Compression;
+using System.Net;
 
 namespace RS1_2024_25.API.Endpoints.DataSeedEndpoints
 {
     [Route("data-seed-base")]
-    public class DataSeedBaseSeed(ApplicationDbContext db) : MyEndpointBaseAsync
+    public class DataSeedBaseSeed(ApplicationDbContext db, IWebHostEnvironment env) : MyEndpointBaseAsync
         .WithoutRequest
         .WithResult<string>
     {
@@ -353,6 +356,7 @@ namespace RS1_2024_25.API.Endpoints.DataSeedEndpoints
             await db.SaveChangesAsync(cancellationToken);
 
             await EnsureCatalogForEveryTenantAsync(db, cancellationToken);
+            await EnsureProductImagesAsync(db, env, cancellationToken);
 
             return "Data generated successfully :D";
 
@@ -454,6 +458,173 @@ namespace RS1_2024_25.API.Endpoints.DataSeedEndpoints
 
                 await db.SaveChangesAsync(cancellationToken);
             }
+        }
+
+        private static async Task EnsureProductImagesAsync(ApplicationDbContext db, IWebHostEnvironment env, CancellationToken cancellationToken)
+        {
+            var products = await db.ProductsAll.OrderBy(p => p.ID).ToListAsync(cancellationToken);
+            if (products.Count == 0)
+            {
+                return;
+            }
+
+            var existingProductIds = await db.ImagesAll
+                .Where(img => img.ImageableType.ToLower() == "products")
+                .Select(img => img.ImageableId)
+                .ToListAsync(cancellationToken);
+            var alreadySeeded = existingProductIds.ToHashSet();
+
+            var webRoot = string.IsNullOrWhiteSpace(env.WebRootPath)
+                ? Path.Combine(env.ContentRootPath, "wwwroot")
+                : env.WebRootPath;
+            var folder = Path.Combine(webRoot, "images", "products");
+            Directory.CreateDirectory(folder);
+
+            var images = new List<Image>();
+            foreach (var product in products)
+            {
+                if (alreadySeeded.Contains(product.ID))
+                {
+                    continue;
+                }
+
+                var fileName = $"product-{product.ID}.png";
+                var fullPath = Path.Combine(folder, fileName);
+                WriteProductPng(fullPath, product.ID, product.Name);
+
+                images.Add(new Image
+                {
+                    Name = product.Name,
+                    ImageableId = product.ID,
+                    ImageableType = "products",
+                    FilePath = fullPath,
+                    Url = $"/images/products/{fileName}",
+                    TenantId = product.TenantId
+                });
+            }
+
+            if (images.Count == 0)
+            {
+                return;
+            }
+
+            await db.ImagesAll.AddRangeAsync(images, cancellationToken);
+            await db.SaveChangesAsync(cancellationToken);
+        }
+
+        private static void WriteProductPng(string path, int productId, string name)
+        {
+            const int width = 320;
+            const int height = 240;
+            var hue = (productId * 47) % 360;
+            var (r, g, b) = HsvToRgb(hue, 0.55, 0.85);
+            var (sr, sg, sb) = HsvToRgb((hue + 28) % 360, 0.35, 0.96);
+
+            var raw = new byte[height * (1 + width * 3)];
+            var i = 0;
+            for (var y = 0; y < height; y++)
+            {
+                raw[i++] = 0;
+                for (var x = 0; x < width; x++)
+                {
+                    var inCard = x > 36 && x < width - 36 && y > 28 && y < height - 28;
+                    var inItem = x > 96 && x < width - 96 && y > 58 && y < height - 52;
+                    var stripe = inItem && ((x + y + productId) % 18) < 6;
+                    byte pr = inItem ? (stripe ? (byte)Math.Min(255, r + 30) : r) : (inCard ? sr : (byte)236);
+                    byte pg = inItem ? (stripe ? (byte)Math.Min(255, g + 30) : g) : (inCard ? sg : (byte)236);
+                    byte pb = inItem ? (stripe ? (byte)Math.Min(255, b + 30) : b) : (inCard ? sb : (byte)236);
+
+                    if (!inItem && inCard && y > height - 70 && y < height - 46 && x > 56 && x < width - 56)
+                    {
+                        var labelIndex = (x - 56) / 8;
+                        var show = labelIndex < name.Length && (name[labelIndex] % 2 == (y % 2));
+                        if (show)
+                        {
+                            pr = pg = pb = 70;
+                        }
+                    }
+
+                    raw[i++] = pr;
+                    raw[i++] = pg;
+                    raw[i++] = pb;
+                }
+            }
+
+            using var idat = new MemoryStream();
+            using (var zlib = new ZLibStream(idat, CompressionLevel.Fastest, leaveOpen: true))
+            {
+                zlib.Write(raw, 0, raw.Length);
+            }
+
+            using var output = new FileStream(path, FileMode.Create, FileAccess.Write);
+            output.Write(new byte[] { 137, 80, 78, 71, 13, 10, 26, 10 });
+
+            var ihdr = new byte[13];
+            WriteInt(ihdr, 0, width);
+            WriteInt(ihdr, 4, height);
+            ihdr[8] = 8;
+            ihdr[9] = 2;
+            WriteChunk(output, "IHDR"u8, ihdr);
+            WriteChunk(output, "IDAT"u8, idat.ToArray());
+            WriteChunk(output, "IEND"u8, Array.Empty<byte>());
+        }
+
+        private static void WriteChunk(Stream output, ReadOnlySpan<byte> type, byte[] data)
+        {
+            Span<byte> length = stackalloc byte[4];
+            WriteInt(length, 0, data.Length);
+            output.Write(length);
+            output.Write(type);
+            output.Write(data);
+
+            var crcSource = new byte[type.Length + data.Length];
+            type.CopyTo(crcSource);
+            data.CopyTo(crcSource.AsSpan(type.Length));
+            Span<byte> crc = stackalloc byte[4];
+            WriteInt(crc, 0, (int)Crc32(crcSource));
+            output.Write(crc);
+        }
+
+        private static void WriteInt(Span<byte> buffer, int offset, int value)
+        {
+            var bytes = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(value));
+            bytes.CopyTo(buffer.Slice(offset, 4));
+        }
+
+        private static uint Crc32(byte[] data)
+        {
+            var crc = 0xFFFFFFFFu;
+            foreach (var value in data)
+            {
+                crc ^= value;
+                for (var bit = 0; bit < 8; bit++)
+                {
+                    var mask = (uint)-(int)(crc & 1);
+                    crc = (crc >> 1) ^ (0xEDB88320u & mask);
+                }
+            }
+
+            return ~crc;
+        }
+
+        private static (byte r, byte g, byte b) HsvToRgb(int hue, double saturation, double value)
+        {
+            var h = hue / 60.0;
+            var c = value * saturation;
+            var x = c * (1 - Math.Abs(h % 2 - 1));
+            var m = value - c;
+            double r1 = 0, g1 = 0, b1 = 0;
+            switch ((int)h)
+            {
+                case 0: r1 = c; g1 = x; break;
+                case 1: r1 = x; g1 = c; break;
+                case 2: g1 = c; b1 = x; break;
+                case 3: g1 = x; b1 = c; break;
+                case 4: r1 = x; b1 = c; break;
+                default: r1 = c; b1 = x; break;
+            }
+
+            return ((byte)((r1 + m) * 255), (byte)((g1 + m) * 255), (byte)((b1 + m) * 255));
         }
     }
 }
