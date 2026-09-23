@@ -323,11 +323,11 @@ namespace RS1_2024_25.API.Endpoints.DataSeedEndpoints
             {
                 var category = new List<Category>
                 {
-                    new Category { Name = "T shirt" },
-                    new Category { Name = "Shirt" },
-                    new Category { Name = "Shorts" },
-                    new Category { Name = "Pants" },
-                    new Category { Name = "Sneakers" },
+                    new Category { Name = "T shirt", TenantId = 1 },
+                    new Category { Name = "Shirt", TenantId = 1 },
+                    new Category { Name = "Shorts", TenantId = 1 },
+                    new Category { Name = "Pants", TenantId = 1 },
+                    new Category { Name = "Sneakers", TenantId = 1 },
                    
                 };
                 await db.CategoryAll.AddRangeAsync(category);
@@ -339,9 +339,9 @@ namespace RS1_2024_25.API.Endpoints.DataSeedEndpoints
             {
                 var categoryProduct = new List<categories_products>
                 {
-                    new categories_products { ProductId = 2, CategoryId = 5 },
-                    new categories_products { ProductId = 3, CategoryId = 5 },
-                    new categories_products {ProductId = 5, CategoryId = 5},
+                    new categories_products { ProductId = 2, CategoryId = 5, TenantId = 1 },
+                    new categories_products { ProductId = 3, CategoryId = 5, TenantId = 1 },
+                    new categories_products { ProductId = 5, CategoryId = 5, TenantId = 1 },
                   
 
                 };

@@ -96,7 +96,8 @@ public class ApplicationDbContext(DbContextOptions options, IHttpContextAccessor
             {
                 //for appuser so it has defaul tenant when there are no claims
                 var path = httpContextAccessor.HttpContext?.Request.Path.Value ?? "";
-                if(path.StartsWith("/appusers/add",StringComparison.OrdinalIgnoreCase))
+                if (path.StartsWith("/appusers/add", StringComparison.OrdinalIgnoreCase)
+                    || path.StartsWith("/data-seed", StringComparison.OrdinalIgnoreCase))
                 {
                     return 1;
                 }
