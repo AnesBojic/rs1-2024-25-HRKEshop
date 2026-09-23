@@ -352,9 +352,108 @@ namespace RS1_2024_25.API.Endpoints.DataSeedEndpoints
 
             await db.SaveChangesAsync(cancellationToken);
 
+            await EnsureCatalogForEveryTenantAsync(db, cancellationToken);
 
             return "Data generated successfully :D";
 
+        }
+
+        private static async Task EnsureCatalogForEveryTenantAsync(ApplicationDbContext db, CancellationToken cancellationToken)
+        {
+            var tenantIds = await db.Tenants.Select(t => t.ID).OrderBy(id => id).ToListAsync(cancellationToken);
+            if (tenantIds.Count < 2)
+            {
+                return;
+            }
+
+            var sourceTenantId = tenantIds[0];
+            if (!await db.ProductsAll.AnyAsync(p => p.TenantId == sourceTenantId, cancellationToken))
+            {
+                return;
+            }
+
+            foreach (var tenantId in tenantIds.Skip(1))
+            {
+                if (await db.ProductsAll.AnyAsync(p => p.TenantId == tenantId, cancellationToken))
+                {
+                    continue;
+                }
+
+                var brandMap = new Dictionary<int, int>();
+                foreach (var brand in await db.BrandsAll.Where(b => b.TenantId == sourceTenantId).ToListAsync(cancellationToken))
+                {
+                    var copy = new Brand { Name = brand.Name, TenantId = tenantId };
+                    db.BrandsAll.Add(copy);
+                    await db.SaveChangesAsync(cancellationToken);
+                    brandMap[brand.ID] = copy.ID;
+                }
+
+                var sizeTypeMap = new Dictionary<int, int>();
+                foreach (var sizeType in await db.SizeTypesAll.Where(s => s.TenantId == sourceTenantId).ToListAsync(cancellationToken))
+                {
+                    var copy = new SizeType { Name = sizeType.Name, TenantId = tenantId };
+                    db.SizeTypesAll.Add(copy);
+                    await db.SaveChangesAsync(cancellationToken);
+                    sizeTypeMap[sizeType.ID] = copy.ID;
+                }
+
+                var sizeMap = new Dictionary<int, int>();
+                foreach (var size in await db.SizesAll.Where(s => s.TenantId == sourceTenantId).ToListAsync(cancellationToken))
+                {
+                    if (!sizeTypeMap.TryGetValue(size.SizeTypeId, out var newSizeTypeId))
+                    {
+                        continue;
+                    }
+
+                    var copy = new Size
+                    {
+                        Value = size.Value,
+                        SizeTypeId = newSizeTypeId,
+                        TenantId = tenantId
+                    };
+                    db.SizesAll.Add(copy);
+                    await db.SaveChangesAsync(cancellationToken);
+                    sizeMap[size.ID] = copy.ID;
+                }
+
+                var productMap = new Dictionary<int, int>();
+                foreach (var product in await db.ProductsAll.Where(p => p.TenantId == sourceTenantId).ToListAsync(cancellationToken))
+                {
+                    var copy = new Product
+                    {
+                        Name = product.Name,
+                        Price = product.Price,
+                        Gender = product.Gender,
+                        ColorId = product.ColorId,
+                        BrandId = brandMap.TryGetValue(product.BrandId, out var newBrandId) ? newBrandId : product.BrandId,
+                        TenantId = tenantId
+                    };
+                    db.ProductsAll.Add(copy);
+                    await db.SaveChangesAsync(cancellationToken);
+                    productMap[product.ID] = copy.ID;
+                }
+
+                var productSizes = await db.ProductsSizesAll.Where(ps => ps.TenantId == sourceTenantId).ToListAsync(cancellationToken);
+                foreach (var productSize in productSizes)
+                {
+                    if (!productMap.TryGetValue(productSize.ProductId, out var newProductId)
+                        || !sizeMap.TryGetValue(productSize.SizeId, out var newSizeId))
+                    {
+                        continue;
+                    }
+
+                    db.ProductsSizesAll.Add(new ProductSize
+                    {
+                        ProductId = newProductId,
+                        SizeId = newSizeId,
+                        TenantId = tenantId,
+                        Price = productSize.Price,
+                        Stock = productSize.Stock
+                    });
+                }
+
+                await db.SaveChangesAsync(cancellationToken);
+            }
         }
     }
 }
