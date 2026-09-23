@@ -70,3 +70,4 @@ coverage/
 # Uploaded shop images (keep folder structure)
 backend/RS1_2024_25.API/wwwroot/images/**/*.*
 !backend/RS1_2024_25.API/wwwroot/images/**/.gitkeep
+docker-compose.override.yml

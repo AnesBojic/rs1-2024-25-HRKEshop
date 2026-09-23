@@ -31,7 +31,8 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Docker
       ASPNETCORE_URLS: http://+:7000
-      ConnectionStrings__db1: "Server=sqlserver,1433;Database=HRKEshop;User Id=sa;Password=Your_strong_Password123;TrustServerCertificate=True;Encrypt=False"
+      # Reach SQL via the published host port (works when container bridge networking is restricted).
+      ConnectionStrings__db1: "Server=host.docker.internal,1433;Database=HRKEshop;User Id=sa;Password=Your_strong_Password123;TrustServerCertificate=True;Encrypt=False"
       Jwt__Key: "HRKEShop_Docker_Jwt_Signing_Key_Change_Me!"
       Jwt__Issuer: HRKEShop
       Jwt__Audience: HRKEShopUsers
